@@ -1,0 +1,9 @@
+name: mu-html
+version: 0.1.0
+
+authors:
+  - da99 <i-hate-spam-1234567@mailinator.com>
+
+crystal: 0.21.1
+
+license: MIT
