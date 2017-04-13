@@ -1,0 +1,16 @@
+
+{
+  "data" : {
+    "copyrigh": "(c) 2001",
+    "msg1": "Hello 1",
+    "msg2": "Hello 2"
+  },
+  "layout" : [
+    {"p": {}, "data": "main.msg"},
+    {"div": {"class":"column"}, "childs": [
+      {"span": "msg1"},
+      {"span": "msg2"}
+    ]}
+    {"footer": {}, "data": "{{copyright}}"}
+  ]
+}
