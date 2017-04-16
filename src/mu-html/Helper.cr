@@ -5,6 +5,20 @@ module Mu_Html
 
     extend self
 
+    def allowed_keys(allowed, o)
+      o.keys.each do |k|
+        raise Exception.new("Invalid key: #{k}") unless allowed.includes?(k)
+      end
+      true
+    end
+
+    def allowed_keys(name : String, allowed, o)
+      o.keys.each do |k|
+        raise Exception.new("Invalid key in #{name}: #{k}") unless allowed.includes?(k)
+      end
+      true
+    end
+
     def make_nil_if_empty_string(raw : String)
       str = raw.strip
       str.empty? ? nil : str

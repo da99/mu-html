@@ -12,7 +12,7 @@ module Mu_Html
       case meta
       when Hash(String, JSON::Type)
 
-        meta       = validate_keys("meta", SECTIONS, meta)
+        Helper.allowed_keys("meta", SECTIONS, meta)
         valid_meta = {} of String => String | Int32 | Int64
 
         meta.each do |key, value|

@@ -185,7 +185,12 @@ module Mu_Html
         [] of JSON::Type
       when Array
         markup.map do | raw |
-          validate_html_element(raw)
+          case raw
+          when Hash(String, JSON::Type)
+            standardize(raw)
+          else
+            raise Exception.new("Invalid tag: #{raw} (#{raw.class}")
+          end
         end
       else
         raise Exception.new("Markup can only be an Array of items.")
