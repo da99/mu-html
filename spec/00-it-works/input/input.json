@@ -1,16 +1,30 @@
 
 {
-  "data" : {
-    "copyrigh": "(c) 2001",
-    "msg1": "Hello 1",
-    "msg2": "Hello 2"
+
+  "meta" : {
+    "title" : "Hello, Page",
+    "layout" : "full"
   },
-  "layout" : [
+
+  "data" : {
+    "copyright": "(c) 2001",
+    "msg1": "Hello 1",
+    "msg2": "Hello 2",
+    "names": ["Dana", "Jon", "Phil"]
+  },
+
+  "markup" : [
     {"p": {}, "data": "main.msg"},
+    {"p": "main.msg"},
     {"div": {"class":"column"}, "childs": [
       {"span": "msg1"},
       {"span": "msg2"}
-    ]}
-    {"footer": {}, "data": "{{copyright}}"}
+    ]},
+    {"each" : "names", "as": "name", "loop": [
+      {"p": "name"}
+    ]},
+    {"footer": {}, "data": "{{copyright}}"},
+    {"input": "msg2", "name": "my-name", "type": "hidden" }
   ]
+
 }
