@@ -14,9 +14,9 @@
   },
 
   "markup" : [
-    {"p": {}, "data": "main.msg"},
+    {"p": null, "body": "main.msg"},
     {"p": "main.msg"},
-    {"div": {"class":"column"}, "childs": [
+    {"div": null, "class":"column", "childs": [
       {"span": "msg1"},
       {"span": "msg2"}
     ]},

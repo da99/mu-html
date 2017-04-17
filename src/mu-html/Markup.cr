@@ -77,6 +77,18 @@ module Mu_Html
         o
       end
 
+      def tag_attr_class(tag : String, o : Hash, k : String, v) : Hash(String, JSON::Type)
+        case v
+        when String
+          v = v.strip
+          if v =~ REGEX["class"]
+            o["class"] = v
+            return o
+          end
+        end
+        raise Exception.new("Invalid value for #{tag} class attribute: #{v} (#{v.class})")
+      end # === def tag_attr_class
+
       def tag_attr_childs(tag : String, o : Hash, k : String, v) : Hash(String, JSON::Type)
         o["childs"] = case v
                       when Array
@@ -94,17 +106,16 @@ module Mu_Html
           next if k == "tag"
           v = origin[k]
 
-          {% for mod in Markup.constants %}
-            {% if mod != "Base" %}
-              {% for meth in Markup.constant(mod).constant("ATTRS") %}
-                {% if meth != mod.downcase %}
-                  if name == "{{mod.downcase}}" && k == {{meth}}
-                    new_tag = tag_attr_{{meth.id}}(name, new_tag, k, v)
-                    next
-                  end
-                {% end %} # === for meth
-              {% end %} # === for meth
-            {% end %} # === if Base
+          {% for mod in Markup.constants.select { |x|
+            y = Markup.constant(x)
+            y.is_a?(TypeNode) && y.has_constant?(:ATTRS)
+          } %}
+            {% for meth in Markup.constant(mod).constant(:ATTRS).reject { |x| x == mod.downcase } %}
+                if name == "{{mod.downcase}}" && k == {{meth}}
+                  new_tag = tag_attr_{{meth.id}}(name, new_tag, k, v)
+                  next
+                end
+            {% end %} # === for meth
           {% end %} # == for mod
 
           raise Exception.new("Invalid key in #{name}: #{k}")
@@ -142,10 +153,9 @@ module Mu_Html
       extend Base
       extend self
 
-      ATTRS = {"p", "body"}
+      ATTRS = {"p", "class", "body"}
 
       def standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        allowed_keys "p", o, {"p", "body"}
         tag = Base.standardize("p", o)
         require_value "p", tag, "body", {String}
         tag
@@ -157,22 +167,22 @@ module Mu_Html
       extend Base
       extend self
 
-      ATTRS = {"div", "body", "childs"}
+      ATTRS = {"div", "class", "body", "childs"}
 
       def standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        # allowed_keys "div", o, {"div", "body", "childs"}
         Base.standardize("div", o)
       end
 
     end # === module DIV
 
     def self.standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-      {% for x in Markup.constants %}
-        {% if x != "Base" %}
-          if o.has_key?("{{x.downcase}}")
-            return {{x}}.standardize(o)
-          end
-        {% end %}
+      {% for mod in Markup.constants.select { |x|
+        y = Markup.constant(x)
+        y.is_a?(TypeNode) && y.has_constant?(:ATTRS)
+      } %}
+        if o.has_key?("{{mod.downcase}}")
+          return {{mod}}.standardize(o)
+        end
       {% end %}
 
       raise Exception.new("Unknown tag: #{o.keys}")
