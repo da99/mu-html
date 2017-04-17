@@ -16,11 +16,11 @@
   "markup" : [
     {"p": null, "body": "main.msg"},
     {"p": "main.msg"},
-    {"div": null, "class":"column", "childs": [
+    {"div": null, "class":"column", "body": [
       {"span": "msg1"},
       {"span": "msg2"}
     ]},
-    {"each" : "names", "as": "name", "loop": [
+    {"each" : "names", "as": "name", "body": [
       {"p": "name"}
     ]},
     {"footer": {}, "data": "{{copyright}}"},

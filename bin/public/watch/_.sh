@@ -2,7 +2,7 @@
 # === {{CMD}}
 watch () {
 
-  if [[ ! -z "$@" ]] || pgrep inotifywait ; then
+  if [[ ! -z "$@" ]]; then
     echo "=== Compiling... $(date "+%H:%M:%S") ..." >&2
     bin/mu-html dev
     tmp/mu-html --file spec/00-it-works/input/input.json

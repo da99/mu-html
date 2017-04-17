@@ -4,14 +4,19 @@ module Mu_Html
   module Markup
 
     module P
+      extend Base
       extend self
 
-      ATTRS = {"p", "class", "body"}
+      def validate(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
+        o = validate_attrs o, "p", "class", "body"
+        o = required_attrs o, "body"
+        o
+      end
 
-      def standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        tag = Base.standardize("p", o)
-        Base.require_value "p", tag, "body", {String}
-        tag
+      def_attr "p" do
+        delete_if nil
+        delete_if :empty_string
+        move_if_is_a "body", String
       end
 
     end # === module HTML
