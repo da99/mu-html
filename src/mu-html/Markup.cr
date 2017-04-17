@@ -1,4 +1,6 @@
 
+require "./Markup/*"
+
 module Mu_Html
 
   module Markup
@@ -110,6 +112,7 @@ module Mu_Html
             y = Markup.constant(x)
             y.is_a?(TypeNode) && y.has_constant?(:ATTRS)
           } %}
+            # Skipping methods like: P.tag_attr_p, DIV.tag_attr_div, etc.
             {% for meth in Markup.constant(mod).constant(:ATTRS).reject { |x| x == mod.downcase } %}
                 if name == "{{mod.downcase}}" && k == {{meth}}
                   new_tag = tag_attr_{{meth.id}}(name, new_tag, k, v)
@@ -149,31 +152,6 @@ module Mu_Html
 
     end # === module Base
 
-    module P
-      extend Base
-      extend self
-
-      ATTRS = {"p", "class", "body"}
-
-      def standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        tag = Base.standardize("p", o)
-        require_value "p", tag, "body", {String}
-        tag
-      end
-
-    end # === module HTML
-
-    module DIV
-      extend Base
-      extend self
-
-      ATTRS = {"div", "class", "body", "childs"}
-
-      def standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        Base.standardize("div", o)
-      end
-
-    end # === module DIV
 
     def self.standardize(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
       {% for mod in Markup.constants.select { |x|
