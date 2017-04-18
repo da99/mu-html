@@ -8,7 +8,7 @@ module Mu_Html
     extend self
 
     def tag_name() : String
-      self.to_s.downcase
+      self.to_s.downcase.split(":").last
     end
 
     def allowed_attrs(o : Hash, *keys)
@@ -53,20 +53,6 @@ module Mu_Html
       o["tag"] = tag_name
       o
     end # === def attr_tag_delete_if_nil
-
-    def tag_attr_class(o : Hash) : Hash(String, JSON::Type)
-      k = "class"
-      v = o[k]
-      case v
-      when String
-        v = v.strip
-        if v =~ Markup::REGEX["class"]
-          o["class"] = v
-          return o
-        end
-      end
-      raise Exception.new("Invalid value for #{tag_name} class attribute: #{v} (#{v.class})")
-    end # === def tag_attr_class
 
     def tag_attr_childs(o : Hash) : Hash(String, JSON::Type)
       k = "childs"
@@ -151,6 +137,23 @@ module Mu_Html
       o
     end # === def required
 
+    def require_attr(o : Hash(String, JSON::Type), k : String) : Hash(String, JSON::Type)
+      raise Exception.new("Missing key in #{tag_name}: #{k} Other keys: #{o.keys}") unless o.has_key?(k)
+      o
+    end # === def require_attr
+
+    def move_attr_if(o : Hash(String, JSON::Type), k : String, new_key : String, target) : Hash(String, JSON::Type)
+      return o unless o.has_key?(k)
+      v = o[k]
+      return o unless v == target
+      if o.has_key?(new_key)
+        raise Exception.new("#{new_key} attribute has been set twice in #{tag_name}: #{k}, #{new_key}")
+      end
+      o[new_key] = v
+      o.delete(k)
+      o
+    end # === def move_attr_if
+
     def move_attr_if_is_a(o : Hash(String, JSON::Type), k : String, new_key : String, target : Class) : Hash(String, JSON::Type)
       return o unless o.has_key?(k)
       v = o[k]
@@ -166,6 +169,66 @@ module Mu_Html
 
       o
     end # === def move_if_is_a
+
+    def delete_attr_if(o : Hash(String, JSON::Type), k : String, target) : Hash(String, JSON::Type)
+      o.delete(k) if o.has_key?(k) && o[k] == target
+      o
+    end # === def delete_attr_if
+
+    def attr_must_be(o : Hash(String, JSON::Type), k : String, *conds : Class | Symbol)
+      return o unless o.has_key?(k)
+      v = o[k]
+      conds.each do |c|
+        case v
+        when c
+          next
+        else
+          case c
+          when :empty, :empty?
+            case v
+            when String, Array
+              next if v.empty?
+            end
+          when :"!empty", :"!empty?"
+            case v
+            when String, Array
+              next if !v.empty?
+            end
+          else
+            raise Exception.new("Invalid condition: #{c}")
+          end
+          raise Exception.new("Invalid value in tag #{tag_name}: #{k}: #{v}")
+        end
+      end
+    end # === def attr_must_be
+
+    def attr_must_be(o : Hash(String, JSON::Type), k : String)
+      return o unless o.has_key?(k)
+      v = o[k]
+      is_valid = yield(v)
+      if !is_valid
+        raise Exception.new("Invalid value for #{k} in #{tag_name}: (#{v.class})")
+      end
+      o
+    end
+
+    def attr_must_be_a(o : Hash(String, JSON::Type), k : String, klass : Class) : Hash(String, JSON::Type)
+      return o unless o.has_key?(k)
+      v = o[k]
+      case v
+      when klass
+        o
+      else
+        raise Exception.new("Invalid type for #{k} in #{tag_name}")
+      end
+    end # === def attr_must_be_a
+
+    def attr_must_match(o : Hash(String, JSON::Type), k : String, pattern : Regex) : Hash(String, JSON::Type)
+      return o unless o.has_key?(k)
+      v = o[k]
+      return o if v.is_a?(String) && v =~ pattern
+      raise Exception.new("Invalid value in #{tag_name} for #{k}: #{v}")
+    end # === def attr_must_match
 
   end # === module Base
 

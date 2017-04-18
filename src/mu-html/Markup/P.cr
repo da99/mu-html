@@ -7,16 +7,18 @@ module Mu_Html
       extend Base
       extend self
 
-      def validate(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        o = validate_attrs o, "p", "class", "body"
-        o = required_attrs o, "body"
-        o
-      end
-
       def_attr "p" do
         delete_if nil
         delete_if :empty_string
         move_if_is_a "body", String
+      end
+
+      def_attr "class" do
+        must_match Markup::REGEX["class"]
+      end
+
+      def_attr "body" do
+        required
       end
 
     end # === module HTML

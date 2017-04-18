@@ -7,14 +7,18 @@ module Mu_Html
       extend Base
       extend self
 
-      def validate(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        o = validate_attrs o, "div", "class", "body", "childs"
-      end
-
       def_attr "div" do
         delete_if nil
         delete_if :empty_string
         move_if_is_a "body", String
+      end
+
+      def_attr "class" do
+        must_match Markup::REGEX["class"]
+      end
+
+      def_attr "body" do
+        must_be_a Array
       end
 
     end # === module DIV
