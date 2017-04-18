@@ -3,6 +3,54 @@ require "./Macro"
 
 module Mu_Html
 
+  class Validate
+    def self.error_message(mod : Class, o : Hash(String, JSON::Type), k : String)
+      "Invalid value in #{mod.tag_name}: #{k}: #{o[k]?.inspect}"
+    end
+  end # === class Validate
+
+  class Required_Key < Validate
+
+    def self.validate(mod : Class, o : Hash(String, JSON::Type), k : String)
+      return o if o.has_key?(k)
+      raise Exception.new("Missing value in #{mod.tag_name}: #{k}")
+    end
+
+  end # === class Required_Key
+
+  class Is_String < Validate
+
+    def self.is?(mod : Class, o : Hash(String, JSON::Type), k : String)
+      o[k].is_a?(String)
+    end
+
+  end # === class Is_String
+
+  class Is_Nil < Validate
+
+    def self.is?(mod : Class, o : Hash(String, JSON::Type), k : String)
+      o[k].is_a?(Nil)
+    end
+
+  end # === class Is_Nil
+
+  class Is_Empty_String < Validate
+
+    def self.is?(mod : Class, o : Hash(String, JSON::Type), k : String)
+      Require_Key.validate(mod, o, k,)
+      v.is_a?(String) && v.strip.empty?
+    end
+
+  end # === class Empty_String
+
+  class Non_Empty_String < Validate
+
+    def self.validate(mod : Class, o : Hash(String, JSON::Type), k)
+      o = Required_Key.validate(mod, o, k)
+    end
+
+  end # === class Non_Empty_String
+
   module Base
 
     extend self
@@ -18,6 +66,13 @@ module Mu_Html
       end
       o
     end # === def allowed_attrs
+
+    def attr_move_to(o : Hash, k : String, new_key : String)
+      raise Exception.new("#{new_key} defined twice in #{tag_name}: #{k}") if o.has_key?(new_key)
+      o[new_key] = o[k]
+      o.delete(k)
+      o
+    end
 
     def attr_tag_to_body_if_string(o : Hash) : Hash(String, JSON::Type)
       return o unless o.has_key?(tag_name)
@@ -175,7 +230,15 @@ module Mu_Html
       o
     end # === def delete_attr_if
 
-    def attr_must_be(o : Hash(String, JSON::Type), k : String, *conds : Class | Symbol)
+    def attr_must_be(o : Hash(String, JSON::Type), k : String, pattern : Regex)
+      o = required(o, k)
+      o = attr_must_be(o,k,String)
+      v = o[k]
+      raise Exception.new("Invalid value in #{tag_name}: #{k} : #{v}") unless v =~ pattern
+      o
+    end
+
+    def attr_must_be(o : Hash(String, JSON::Type), k : String, *conds : Class | Symbol) : Hash(String, JSON::Type)
       return o unless o.has_key?(k)
       v = o[k]
       conds.each do |c|
@@ -200,6 +263,7 @@ module Mu_Html
           raise Exception.new("Invalid value in tag #{tag_name}: #{k}: #{v}")
         end
       end
+      o
     end # === def attr_must_be
 
     def attr_must_be(o : Hash(String, JSON::Type), k : String)

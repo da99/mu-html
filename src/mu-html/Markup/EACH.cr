@@ -9,7 +9,8 @@ module Mu_Html
       extend self
 
       def_attr "each" do
-        move_if "in", String
+        must_be(REGEX["data_id"])
+        move_to "in"
       end # === validate_attr "each"
 
       def_attr "as" do

@@ -9,7 +9,9 @@ module Mu_Html
     REGEX = {
       "id": /^[a-z0-9\_]+$/,
       "class": /^[a-z0-9\-\_\ ]+$/,
-      "empty_string": /^$/
+      "empty_string": /^$/,
+      "data_id" : /^[a-z0-9\_\.\-]+$/,
+      "non_empty_string": /^.+$/
     }
 
     VALID_HTML = {
@@ -42,8 +44,14 @@ module Mu_Html
       %}
 
         if o.has_key?({{mod.downcase}})
-          {% for meth in @type.constant(mod).methods.map(&.name.stringify).map { |x| x[9..-1] }  %}
-            o = {{mod.upcase.id}}.tag_attr_{{meth.id}}(o)
+          {%
+           for meth in @type
+            .constant(mod)
+            .methods
+            .map(&.name.stringify)
+            .select { |x| x[0..8] == "tag_attr_" }
+          %}
+            o = {{mod.id}}.{{meth.id}}(o)
           {% end %}
           return o
         end
