@@ -4,6 +4,7 @@
 # module Mu_Html
 # end # === module Mu_Html
 
+
 macro validate_attrs(o, *keys)
   begin
     valid_keys = {{keys}}
@@ -18,6 +19,10 @@ macro validate_attrs(o, *keys)
 end # === macro validate
 
 macro def_attr(key, &block)
+  {% if !@type.has_constant?("TAG_NAME") %}
+    TAG_NAME = {{ @type.stringify.split(":").last.downcase }}
+  {% end %}
+
   def tag_attr_{{key.id}}(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
     k = "{{key.id}}"
     {{block.body}}

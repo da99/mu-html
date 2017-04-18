@@ -138,7 +138,7 @@ module Mu_Html
     end # === def required
 
     def require_attr(o : Hash(String, JSON::Type), k : String) : Hash(String, JSON::Type)
-      raise Exception.new("Missing key in #{tag_name}: #{k} Other keys: #{o.keys}") unless o.has_key?(k)
+      raise Exception.new("Missing key in \"#{tag_name}\" tag: \"#{k}\". Other keys: #{o.keys}") unless o.has_key?(k)
       o
     end # === def require_attr
 
