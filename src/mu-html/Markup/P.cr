@@ -9,17 +9,18 @@ module Mu_Html
 
         attr "p" do
           move_to "body" if is?(Is_Non_Empty_String)
-          delete if exists? and is_either?(Is_Empty_String, nil)
+          delete if exists? && is_either?(Is_Empty_String, nil)
           is_invalid if exists?
         end
 
+
         attr "class" do
-          is_invalid unless is?(Markup::REGEX["class"])
+          is_invalid unless is?(REGEX["class"])
         end
 
         required "body" do
           is_invalid unless is_either?(
-            Markup::REGEX["data_id"],
+            REGEX["data_id"],
             String,
             Array(Hash(String, JSON::Type))
           )

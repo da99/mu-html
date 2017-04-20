@@ -68,11 +68,17 @@ module Mu_Html
         with self yield
       end
 
-      def is?(a_nil : Nil)
+      def is?(a_nil : Nil) : Bool
         origin[key] == a_nil
       end
 
-      def is?(klass : Class)
+      def is?(pattern : Regex) : Bool
+        return false unless origin[key].is_a?(String)
+        return true if origin[key] =~ pattern
+        false
+      end # === def is?
+
+      def is?(klass : Class) : Bool
         v = origin[key]
 
         case v
@@ -85,19 +91,46 @@ module Mu_Html
         end
 
         false
+      end # === def is?
+
+      def is?(o)
+        false
+      end
+
+      def is?(*args)
+        args.all? { |x| is?(x) }
+      end
+
+      def exists? : Bool
+        origin.has_key?(key)
+      end
+
+      def is_either?(*args)
+        args.any? { |x| is?(x) }
       end
 
       def required
         raise Exception.new("Missing key in #{tag_name}: #{key}") unless origin.has_key?(key)
       end
 
-      def should_be(ans : Bool)
+      def delete
+        origin.delete(key) if exists?
+      end
+
+      def should_be(pattern : Regex) : Bool
+        v = origin[key]
+        return true if v.is_a?(String) && v =~ pattern
+        raise Exception.new("Invalid value in #{tag_name}: #{key}: #{v}")
+      end
+
+      def should_be(ans : Bool) : Bool
         return true if ans
         is_invalid
       end
 
       def is_invalid()
         raise Exception.new("Invalid key in #{tag_name}: #{key}: (#{origin[key].class})") if origin.has_key?(key)
+        true
       end
 
     end # === class Tag

@@ -14,7 +14,7 @@ module Mu_Html
         end
 
         attr "class" do
-          should_be is?(REGEX["class"])
+          should_be(is?(REGEX["class"]))
         end
 
         attr "body" do
