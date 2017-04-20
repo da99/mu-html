@@ -2,6 +2,9 @@
 # === {{CMD}}
 watch () {
 
+  PATH="$PATH:$THIS_DIR/../progs/latest-crystal/bin"
+  PATH="$PATH:$THIS_DIR/../progs/latest-shards/bin"
+
   if [[ ! -z "$@" ]]; then
     echo "=== Compiling... $(date "+%H:%M:%S") ..." >&2
     bin/mu-html dev
