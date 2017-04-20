@@ -5,10 +5,13 @@ module Mu_Html
 
     module INPUT
 
+      ALLOWED_TYPES = {"hidden"}
+
       def_tag do
 
         required "input" do
-          move_to "value" if is?(REGEX["data_id"])
+          is_invalid unless is?(REGEX["data_id"])
+          move_to "value"
         end
 
         required "name" do
@@ -16,7 +19,7 @@ module Mu_Html
         end
 
         required "type" do
-          is_invalid unless ["hidden"].includes?(value)
+          is_invalid unless ALLOWED_TYPES.includes?(value)
         end
 
         required "value" do
