@@ -4,24 +4,30 @@ module Mu_Html
   module Markup
 
     module P
-      extend Base
-      extend self
 
-      def_attr "p" do
-        delete_if nil
-        delete_if :empty_string
-        move_if_is_a "body", String
-      end
+      def_tag do
 
-      def_attr "class" do
-        must_match Markup::REGEX["class"]
-      end
+        attr "p" do
+          move_to "body" if is?(Is_Non_Empty_String)
+          delete if exists? and is_either?(Is_Empty_String, nil)
+          is_invalid if exists?
+        end
 
-      def_attr "body" do
-        required
-      end
+        attr "class" do
+          is_invalid unless is?(Markup::REGEX["class"])
+        end
 
-    end # === module HTML
+        required "body" do
+          is_invalid unless is_either?(
+            Markup::REGEX["data_id"],
+            String,
+            Array(Hash(String, JSON::Type))
+          )
+        end
+
+      end # === def_tag
+
+    end # === module P
 
   end # === module Markup
 

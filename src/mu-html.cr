@@ -1,5 +1,10 @@
 
-require "./mu-html/*"
+require "./mu-html/Base/Base"
+require "./mu-html/Data/Data"
+require "./mu-html/Markup/Markup"
+require "./mu-html/Meta/Meta"
+require "./mu-html/Style/Style"
+
 require "option_parser"
 require "json"
 
@@ -33,7 +38,7 @@ module Mu_Html
   }
 
   def parse(path : String)
-    source = Helper.read_file(path)
+    source = read_file(path)
     raise Exception.new("Empty file.") unless source
     raise Exception.new("Invalid text encoding.") unless source.valid_encoding?
 
@@ -41,7 +46,7 @@ module Mu_Html
 
     json = case json
            when Hash
-             Helper.allowed_keys(SECTIONS, json)
+             Base.allowed_keys(SECTIONS, json)
              {
                "meta": Meta.parse(json),
                "data": Data.parse(json),
@@ -55,6 +60,17 @@ module Mu_Html
   rescue JSON::ParseException
     nil
   end # === def parse
+
+  def read_file(path : String)
+    return nil if !path.valid_encoding?
+    return nil if !File.file?(path)
+    content = File.read(path)
+    return nil if !content
+    return if !content.valid_encoding?
+    content
+  rescue Exception
+    nil
+  end # === def read_file
 
 end # === module Mu_Html
 

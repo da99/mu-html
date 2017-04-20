@@ -5,28 +5,26 @@ module Mu_Html
 
     module EACH
 
-      extend Base
-      extend self
+      def_tag do
 
-      def_attr "each" do
-        must_be(REGEX["data_id"])
-        move_to "in"
-      end # === validate_attr "each"
+        required "each" do
+          should_be is?(REGEX["data_id"])
+          move_to "in"
+        end # === validate_attr "each"
 
-      def_attr "as" do
-        must_be(String, :"!empty")
-        required
-      end
+        required "as" do
+          should_be is?(Is_Non_Empty_String)
+        end
 
-      def_attr "in" do
-        must_be(String, :"!empty")
-        required
-      end
+        required "in" do
+          should_be is?(Is_Non_Empty_String)
+        end
 
-      def_attr "body" do
-        must_be_a Array(JSON::Type)
-        required
-      end
+        required "body" do
+          should_be is?(Array(JSON::Type))
+        end
+
+      end # == def_tag
 
     end # === module EACH
 

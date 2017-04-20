@@ -1,10 +1,18 @@
 
-require "./Markup/Base"
-require "./Markup/*"
+require "./macro"
+require "./Base"
+require "./Tag"
+require "./*"
 
 module Mu_Html
 
   module Markup
+
+    TAGS = {
+      "p": P,
+      "div": DIV,
+      "each": EACH
+    }
 
     REGEX = {
       "id": /^[a-z0-9\_]+$/,
@@ -35,25 +43,10 @@ module Mu_Html
     } # === VALID_HTML
 
     def self.validate_tag(o : Hash(String, JSON::Type))
-      {%
-       for mod in @type
-        .constants
-        .select { |x| @type.constant(x).is_a?(TypeNode) }
-        .select { |x| @type.constant(x).has_constant?("TAG_NAME") }
-        .map { |x| x.stringify }
-      %}
+      {% for tag, mod in TAGS %}
 
-        if o.has_key?({{mod.downcase}})
-          {%
-           for meth in @type
-            .constant(mod)
-            .methods
-            .map(&.name.stringify)
-            .select { |x| x[0..8] == "tag_attr_" }
-          %}
-            o = {{mod.id}}.{{meth.id}}(o)
-          {% end %}
-          return o
+        if o.has_key?({{tag.stringify}})
+          return {{mod.id}}.validate_tag(o)
         end
 
       {% end %}

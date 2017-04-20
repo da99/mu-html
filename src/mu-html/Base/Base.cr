@@ -1,7 +1,8 @@
 
+require "./Validate"
 module Mu_Html
 
-  module Helper
+  module Base
 
     extend self
 
@@ -39,6 +40,6 @@ module Mu_Html
       nil
     end # === def read_file
 
-  end # === module Helper
+  end # === module Base
 
 end # === module Mu_Html

@@ -5,34 +5,23 @@ module Mu_Html
 
     module DIV
 
-      extend Base
-      extend self
+      def_tag do
 
-      def_attr "div" do
-        delete_if Is_Nil
-        delete_if Is_Empty_String
-        on(Is_String) do
-          move_to "body"
+        attr "div" do
+          move_to "body" if is?(Is_Non_Empty_String)
+          delete if is_either?(nil, Is_Empty_String)
+          should_be !exists?
         end
-        must_be Is_Missing_Key
-      end
 
-      def attr_div
-        delete_if Is_Nil
-        delete_if Is_Empty_String
-        on(Is_String) do
-          move_to "body"
+        attr "class" do
+          should_be is?(REGEX["class"])
         end
-        must_be Is_Missing_Key
-      end
 
-      def_attr "class" do
-        must_match REGEX["class"]
-      end
+        attr "body" do
+          should_be( is_either?(String, Array) )
+        end
 
-      def_attr "body" do
-        must_be Is_Array
-      end
+      end # === def_tag
 
     end # === module DIV
 
