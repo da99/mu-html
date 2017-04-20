@@ -36,8 +36,6 @@ module Mu_Html
       return nil if !content
       return if !content.valid_encoding?
       content
-    rescue Exception
-      nil
     end # === def read_file
 
   end # === module Base

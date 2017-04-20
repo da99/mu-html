@@ -11,36 +11,16 @@ module Mu_Html
     TAGS = {
       "p": P,
       "div": DIV,
-      "each": EACH
+      "each": EACH,
+      "footer": FOOTER,
+      "input": INPUT
     }
 
     REGEX = {
       "id": /^[a-z0-9\_]+$/,
       "class": /^[a-z0-9\-\_\ ]+$/,
-      "empty_string": /^$/,
-      "data_id" : /^[a-z0-9\_\.\-]+$/,
-      "non_empty_string": /^.+$/
+      "data_id" : /^[a-z0-9\_\.\-]+$/
     }
-
-    VALID_HTML = {
-      "span": {
-        attrs: ID_AND_OR_CLASS,
-        tags: {
-          { "span"=> String },
-          { "span"=> Hash,       "data"=> String },
-          { "span"=> Empty_Hash, "data"=> String }
-        }
-      },
-
-      "footer" : {
-        attrs: ID_AND_OR_CLASS,
-        tags: {
-          { "footer"=> Hash,       "data"=> String },
-          { "footer"=> Empty_Hash, "data"=> String },
-          { "footer"=> String }
-        }
-      }
-    } # === VALID_HTML
 
     def self.validate_tag(o : Hash(String, JSON::Type))
       {% for tag, mod in TAGS %}

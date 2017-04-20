@@ -57,8 +57,6 @@ module Mu_Html
              raise Exception.new("A key/value data structure was not found.")
            end # === case json
 
-  rescue JSON::ParseException
-    nil
   end # === def parse
 
   def read_file(path : String)
@@ -68,8 +66,6 @@ module Mu_Html
     return nil if !content
     return if !content.valid_encoding?
     content
-  rescue Exception
-    nil
   end # === def read_file
 
 end # === module Mu_Html

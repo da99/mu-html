@@ -7,12 +7,11 @@ module Mu_Html
 
       def_tag do
 
-        attr "p" do
+        required "p" do
           move_to "body" if is?(Is_Non_Empty_String)
           delete if exists? && is_either?(Is_Empty_String, nil)
           is_invalid if exists?
         end
-
 
         attr "class" do
           is_invalid unless is?(REGEX["class"])

@@ -23,7 +23,7 @@
     {"each" : "names", "as": "name", "body": [
       {"p": "name"}
     ]},
-    {"footer": {}, "data": "{{copyright}}"},
+    {"footer": null, "body": "{{copyright}}"},
     {"input": "msg2", "name": "my-name", "type": "hidden" }
   ]
 

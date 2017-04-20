@@ -8,6 +8,7 @@ module Mu_Html
       getter tag_name : String
       getter origin : Hash(String, JSON::Type)
       property key : String | Nil
+      getter attributes = ["tag"] of String
 
       def initialize(@tag_name : String, @origin : Hash(String, JSON::Type))
         raise Exception.new("Invalid key in #{tag_name}: tag") if @origin.has_key?("tag")
@@ -17,38 +18,32 @@ module Mu_Html
       def initialize(@tag_name : String, @origin : Hash(String, JSON::Type), @key : String)
       end
 
+      def key=(k : String)
+        @key = k
+        attributes << k
+      end
+
+      def value
+        origin[key]
+      end
+
+      def required(new_key : String)
+        self.key= new_key
+        required
+        with self yield
+        self
+      end
+
+      def required
+        return true if key == tag_name || origin.has_key?(key)
+        raise Exception.new("Missing key in #{tag_name}: #{origin.keys}")
+      end
+
       def attr(k : String)
         return false unless origin.has_key?(k)
         self.key= k
         with self yield
         self
-      end
-
-      def delete_if(klass : Class)
-        o = origin
-        k = key
-        return o unless o.has_key?(k)
-        v = o[k]
-
-        case v
-        when klass
-          v
-        else
-          return o unless klass.responds_to?(:is?)
-          return o unless klass.is?(v)
-        end
-
-        o.delete k
-        o
-      end
-
-      def delete_if(a_nil : Nil)
-        o = origin
-        k = key
-        return o unless o.has_key?(k)
-        return o unless o[k] == nil
-        o.delete(k)
-        o
       end
 
       def dsl
@@ -83,14 +78,10 @@ module Mu_Html
 
         case v
         when klass
-          true
+          return true
         else
-          if klass.responds_to?(:is?)
-             return klass.is?(v)
-          end
+          klass == v
         end
-
-        false
       end # === def is?
 
       def is?(o)
@@ -107,10 +98,6 @@ module Mu_Html
 
       def is_either?(*args)
         args.any? { |x| is?(x) }
-      end
-
-      def required
-        raise Exception.new("Missing key in #{tag_name}: #{key}") unless origin.has_key?(key)
       end
 
       def delete
@@ -132,6 +119,10 @@ module Mu_Html
         raise Exception.new("Invalid key in #{tag_name}: #{key}: (#{origin[key].class})") if origin.has_key?(key)
         true
       end
+
+      def invalid_attributes
+        origin.keys - attributes
+      end # === def invalid_attributes
 
     end # === class Tag
 

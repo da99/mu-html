@@ -18,32 +18,48 @@ module Mu_Html
 
   class Is_String < Validate
 
-    def self.is?(mod : Class, o : Hash(String, JSON::Type), k : String)
-      o[k].is_a?(String)
+    def self.==(str : String)
+      true
+    end
+
+    def self.==(o)
+      false
     end
 
   end # === class Is_String
 
   class Is_Nil < Validate
 
-    def self.is?(mod : Class, o : Hash(String, JSON::Type), k : String)
-      o[k].is_a?(Nil)
+    def self.==(n : Nil)
+      true
+    end
+
+    def self.==(o)
+      false
     end
 
   end # === class Is_Nil
 
   class Is_Non_Empty_String < Validate
 
-    def self.is?(v)
-      v.is_a?(String) && !v.strip.empty?
+    def self.==(str : String)
+      !str.strip.empty?
+    end
+
+    def self.==(o)
+      false
     end
 
   end # === class Empty_String
 
   class Is_Empty_String < Validate
 
-    def self.is?(v)
-      v.is_a?(String) && v.strip.empty?
+    def self.==(str : String)
+      str.strip.empty?
+    end
+
+    def self.==(o)
+      false
     end
 
   end # === class Empty_String
