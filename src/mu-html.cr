@@ -50,7 +50,7 @@ module Mu_Html
              {
                "meta": Meta.parse(json),
                "data": Data.parse(json),
-               "markup": Markup.parse(json),
+               "markup": Markup.new(json).to_array,
                "style": Style.parse(json)
              }
            else

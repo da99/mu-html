@@ -14,8 +14,8 @@
   },
 
   "markup" : [
-    {"p": null, "body": "main.msg"},
-    {"p": "main.msg"},
+    {"p": null, "body": "main.msg1"},
+    {"p": "main.msg2"},
     {"div": null, "class":"column", "body": [
       {"span": "msg1"},
       {"span": "msg2"}
