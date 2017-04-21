@@ -8,7 +8,6 @@ module Mu_Html
 
   class Markup
 
-
     def self.parse(json)
       markup = json.has_key?("markup") ? json["markup"] : nil
 
@@ -18,7 +17,8 @@ module Mu_Html
         raise Exception.new("Invalid json.")
 
       else
-        new(markup).tags
+        new(markup).to_array
+
       end # === case
     end # === def parse
 
