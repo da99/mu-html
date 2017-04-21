@@ -1,7 +1,7 @@
 
 module Mu_Html
 
-  module Markup
+  class Markup
 
     class Tag
 
@@ -124,8 +124,12 @@ module Mu_Html
         origin.keys - attributes
       end # === def invalid_attributes
 
+      def to_hash
+        origin
+      end # === def to_hash
+
     end # === class Tag
 
-  end # === module Markup
+  end # === class Markup
 
 end # === module Mu_Html

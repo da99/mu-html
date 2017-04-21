@@ -6,7 +6,21 @@ require "./*"
 
 module Mu_Html
 
-  module Markup
+  class Markup
+
+
+    def self.parse(json)
+      markup = json.has_key?("markup") ? json["markup"] : nil
+
+      case markup
+
+      when Nil
+        raise Exception.new("Invalid json.")
+
+      else
+        new(markup).tags
+      end # === case
+    end # === def parse
 
     TAGS = {
       "p": P,
@@ -22,8 +36,23 @@ module Mu_Html
       "data_id" : /^[a-z0-9\_\.\-]+$/
     }
 
-    def self.validate_tag(o : Hash(String, JSON::Type))
-      {% for tag, mod in TAGS %}
+    getter origin : Array(JSON::Type)
+    getter tags : Array(Tag)
+
+    def initialize(@origin : Array(JSON::Type))
+      @tags = origin.map { | raw |
+        validate_tag(raw)
+      }
+    end # === def initialize
+
+    def initialize(raw)
+      @origin = [] of JSON::Type
+      @tags = [] of Tag
+      raise Exception.new("Markup can only be an Array of tags.")
+    end # === def initialize
+
+    def validate_tag(o : Hash(String, JSON::Type))
+      {% for tag, mod in Markup::TAGS %}
 
         if o.has_key?({{tag.stringify}})
           return {{mod.id}}.validate_tag(o)
@@ -32,32 +61,16 @@ module Mu_Html
       {% end %}
 
       raise Exception.new("Unknown tag with keys: #{o.keys}")
-    end # === validate
+    end # === def validate_tag
 
-    def self.parse(json)
-      markup = json.has_key?("markup") ? json["markup"] : nil
+    def validate_tag(raw)
+      raise Exception.new("Invalid value: #{raw}")
+    end # === def validate_tag
 
-      case markup
+    def to_array
+      tags.map(&.to_hash)
+    end
 
-      when Nil
-        [] of JSON::Type
-
-      when Array(JSON::Type)
-        markup.map { | raw |
-          case raw
-          when Hash(String, JSON::Type)
-            validate_tag(raw)
-          else
-            raise Exception.new("Invalid value: #{raw}")
-          end
-        }
-
-      else
-        raise Exception.new("Markup can only be an Array of items.")
-
-      end # === case
-    end # === def parse
-
-  end # === module Markup
+  end # === class Markup
 
 end # === module Mu_Html

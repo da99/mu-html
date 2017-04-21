@@ -1,7 +1,7 @@
 
 module Mu_Html
 
-  module Markup
+  class Markup
 
     module FOOTER
 
@@ -21,6 +21,6 @@ module Mu_Html
 
     end # === module FOOTER
 
-  end # === module Markup
+  end # === class Markup
 
 end # === module Mu_Html

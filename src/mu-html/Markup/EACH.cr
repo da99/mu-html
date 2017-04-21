@@ -1,7 +1,7 @@
 
 module Mu_Html
 
-  module Markup
+  class Markup
 
     module EACH
 
@@ -28,6 +28,6 @@ module Mu_Html
 
     end # === module EACH
 
-  end # === module Markup
+  end # === class Markup
 
 end # === module Mu_Html

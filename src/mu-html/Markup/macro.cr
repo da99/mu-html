@@ -8,7 +8,7 @@ macro def_tag(&block)
     if !tag.invalid_attributes.empty?
       raise Exception.new("Unknown keys specified: #{tag.invalid_attributes} in tag")
     end
-    tag.origin
+    tag
   end
 
 end # === macro def_tag
