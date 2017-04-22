@@ -20,7 +20,7 @@ watch () {
       echo "!!! Crystal not found in path." >&2
       exit 2
     fi
-    "$(basename "$THIS_DIR")" watch run
+    "$(basename "$THIS_DIR")" watch run || :
     mksh_setup watch "-r src -r spec -r $THIS_DIR/bin/public/watch" "$(basename "$THIS_DIR") watch run"
   fi
 

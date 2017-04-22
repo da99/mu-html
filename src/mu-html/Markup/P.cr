@@ -5,6 +5,8 @@ module Mu_Html
 
     module P
 
+      include Tag::Macro
+
       def_tag do
 
         required "p" do

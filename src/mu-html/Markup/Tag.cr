@@ -1,44 +1,4 @@
 
-macro tag_name(new_key)
-  @@tag_name = {{new_key}}
-end # === macro tag_name
-
-macro def_tag(&block)
-
-  @@tag_name = {{ @type.name.split(":").last.downcase }}
-
-  def self.tag_name
-    @@tag_name
-  end
-
-  def self.tag?(raw : Hash(String, JSON::Type)) : Bool
-    raw.has_key?(tag_name)
-  end
-
-  def self.clean(tag)
-    {{block.body}}
-    tag
-  end
-
-end # === macro def_tag
-
-macro new_attr(meth, key)
-  tag.{{meth.id}} {{key}} do
-    {{yield}}
-  end
-end # === macro new_attr
-
-macro attr(key)
-  new_attr(:attr, {{key}}) do
-    {{yield}}
-  end
-end # === macro attr
-
-macro required(key)
-  new_attr(:required, {{key}}) do
-    {{yield}}
-  end
-end
 
 module Mu_Html
 
@@ -46,13 +6,60 @@ module Mu_Html
 
     class Tag
 
+      module Macro
+
+        macro tag_name(new_key)
+          @@tag_name = {{new_key}}
+        end # === macro tag_name
+
+        macro def_tag(&block)
+
+          @@tag_name = {{ @type.name.split(":").last.downcase }}
+
+          def self.tag_name
+            @@tag_name
+          end
+
+          def self.tag?(raw : Hash) : Bool
+            raw.has_key?(tag_name)
+          end
+
+          def self.clean(tag)
+            {{block.body}}
+            tag
+          end
+
+        end # === macro def_tag
+
+        macro new_attr(meth, key)
+          tag.{{meth.id}} {{key}} do
+            {{yield}}
+          end
+        end # === macro new_attr
+
+        macro attr(key)
+          new_attr(:attr, {{key}}) do
+            {{yield}}
+          end
+        end # === macro attr
+
+        macro required(key)
+          new_attr(:required, {{key}}) do
+            {{yield}}
+          end
+        end
+
+
+      end # === module Macro
+
       getter tag_name : String
       getter origin : Hash(String, JSON::Type)
-      property key : String | Nil
       getter attributes = ["tag"] of String
       getter parent : Markup | Tag | Nil
 
-      def initialize(@parent : Markup, @origin : Hash(String, JSON::Type))
+      property key : String
+
+      def initialize(@parent : Markup | Tag, @origin : Hash(String, JSON::Type))
         mod = nil
         {%
          for tag in Markup.constants
@@ -69,6 +76,7 @@ module Mu_Html
         raise Exception.new("Unknown tag with keys: #{origin.keys}") unless mod
 
         @tag_name = mod.tag_name
+        @key = tag_name
         raise Exception.new("Invalid attribute in #{tag_name}: tag") if @origin.has_key?("tag")
         @origin["tag"] = tag_name
 
@@ -79,9 +87,11 @@ module Mu_Html
       end # === def initialize
 
       def initialize(raw_parent, raw)
+        puts typeof(raw)
         raise Exception.new("Invalid tag: #{raw}")
         @origin = {} of String => JSON::Type
         @tag_name = ""
+        @key = ""
       end
 
       def key=(k : String)
@@ -119,7 +129,7 @@ module Mu_Html
       def move_to(new_key : String)
         raise Exception.new("Key defined twice in #{tag_name}: #{key}, #{new_key}") if origin.has_key?(new_key)
         raise Exception.new("Missing key in #{tag_name}: #{key}") unless origin.has_key?(key)
-        v = origin[key]
+        v = self.value
         origin.delete(key)
         origin[new_key] = v
       end
@@ -134,13 +144,13 @@ module Mu_Html
       end
 
       def is?(pattern : Regex) : Bool
-        return false unless origin[key].is_a?(String)
-        return true if origin[key] =~ pattern
+        return false unless value.is_a?(String)
+        return true if value =~ pattern
         false
       end # === def is?
 
       def is?(klass : Class) : Bool
-        v = origin[key]
+        v = value
 
         case v
         when klass
@@ -171,7 +181,7 @@ module Mu_Html
       end
 
       def should_be(pattern : Regex) : Bool
-        v = origin[key]
+        v = value
         return true if v.is_a?(String) && v =~ pattern
         raise Exception.new("Invalid value in #{tag_name}: #{key}: #{v}")
       end
@@ -189,6 +199,22 @@ module Mu_Html
       def invalid_attributes
         origin.keys - attributes
       end # === def invalid_attributes
+
+      def to_markup
+        v = value
+        case v
+        when Array(JSON::Type)
+          clean_childs = [] of JSON::Type
+          v.each { |x|
+            clean_childs << Tag.new(self, x).to_hash
+          }
+          origin[key] = clean_childs
+        when String
+          :ignore
+        else
+          raise Exception.new("Invalid value for #{tag_name}: #{key} : #{v}")
+        end
+      end # === def to_markup
 
     end # === class Tag
 

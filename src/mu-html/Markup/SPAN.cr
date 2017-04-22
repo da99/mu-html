@@ -3,16 +3,15 @@ module Mu_Html
 
   class Markup
 
-    module DIV
+    module SPAN
 
       include Tag::Macro
 
       def_tag do
 
-        required "div" do
+        required "span" do
           move_to "body" if is?(Is_Non_Empty_String)
-          delete if is_either?(nil, Is_Empty_String)
-          should_be !exists?
+          delete if exists? && is_either?(nil, Is_Empty_String)
         end
 
         attr "class" do
@@ -20,15 +19,14 @@ module Mu_Html
         end
 
         attr "body" do
-          should_be is_either?(REGEX["data_id"], Array)
-          to_markup
+          delete if is_either?(nil, Is_Empty_String)
+          should_be(is?(REGEX["data_id"])) if exists?
         end
 
       end # === def_tag
 
-    end # === module DIV
+    end # === module SPAN
 
   end # === class Markup
 
 end # === module Mu_Html
-

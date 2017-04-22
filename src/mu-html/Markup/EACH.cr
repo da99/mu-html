@@ -5,6 +5,8 @@ module Mu_Html
 
     module EACH
 
+      include Tag::Macro
+
       def_tag do
 
         required "each" do

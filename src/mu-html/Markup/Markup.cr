@@ -9,6 +9,7 @@ require "./DIV"
 require "./EACH"
 require "./FOOTER"
 require "./INPUT"
+require "./SPAN"
 # =============================
 
 module Mu_Html

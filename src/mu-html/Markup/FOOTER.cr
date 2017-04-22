@@ -5,6 +5,8 @@ module Mu_Html
 
     module FOOTER
 
+      include Tag::Macro
+
       def_tag do
         required "footer" do
           move_to "body" if is?(Is_Non_Empty_String)

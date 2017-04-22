@@ -5,6 +5,8 @@ module Mu_Html
 
     module INPUT
 
+      include Tag::Macro
+
       ALLOWED_TYPES = {"hidden"}
 
       def_tag do
