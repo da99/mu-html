@@ -23,6 +23,7 @@ module Mu_Html
             is_invalid unless value?(A_Data_ID) ||
               value?(String) ||
               value?( Array(Hash(String, JSON::Type)) )
+            to_tags(parent) if value?.is_a?(Array)
           end
 
         end # === clean_keys

@@ -15,6 +15,14 @@ module Mu_Html
 
           key "body" do
             is_invalid unless has_key?
+            case value
+            when Array
+              to_tags(parent)
+            when String
+              :ignore
+            else
+              is_invalid
+            end
           end
         end
       end # === def self.tag

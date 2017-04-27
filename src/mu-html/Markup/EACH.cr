@@ -23,6 +23,7 @@ module Mu_Html
 
           key "body" do
             is_invalid unless value.is_a?(Array(JSON::Type))
+            to_tags(parent)
           end
         end
       end # === def self.tag
