@@ -1,5 +1,4 @@
 
-require "./macro"
 require "./A"
 require "./Tag/Tag"
 
