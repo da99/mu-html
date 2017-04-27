@@ -1,35 +1,37 @@
 
 module Mu_Html
-
-  class Markup
+  module Markup
 
     module EACH
 
-      include Tag::Macro
+      extend Tag
 
-      def_tag do
+      def self.tag(parent, o : Hash(String, JSON::Type))
+        clean(o) do
+          key "each" do
+            required
+            is_invalid unless value?(A_Data_ID)
+            move_to "in"
+          end # === validate_attr "each"
 
-        required "each" do
-          should_be is?(REGEX["data_id"])
-          move_to "in"
-        end # === validate_attr "each"
+          key "as" do
+            required
+            is_invalid unless value?(A_Non_Empty_String)
+          end
 
-        required "as" do
-          should_be is?(Is_Non_Empty_String)
+          key "in" do
+            required
+            is_invalid unless value?(A_Non_Empty_String)
+          end
+
+          key "body" do
+            required
+            is_invalid unless value.is_a?(Array(JSON::Type))
+          end
         end
-
-        required "in" do
-          should_be is?(Is_Non_Empty_String)
-        end
-
-        required "body" do
-          should_be is?(Array(JSON::Type))
-        end
-
-      end # == def_tag
+      end # === def self.tag
 
     end # === module EACH
 
-  end # === class Markup
-
+  end # === module Markup
 end # === module Mu_Html

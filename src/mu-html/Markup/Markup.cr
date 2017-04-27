@@ -1,7 +1,7 @@
 
 require "./macro"
 require "./Base"
-require "./Tag"
+require "./Tag/Tag"
 
 # === Include the tags: =======
 require "./P"
@@ -14,49 +14,43 @@ require "./SPAN"
 
 module Mu_Html
 
-  class Markup
+  module Markup
 
     REGEX = {
-      "id": /^[a-z0-9\_]+$/,
-      "class": /^[a-z0-9\-\_\ ]+$/,
-      "data_id" : /^[a-z0-9\_\.\-]+$/
+      id: /^[a-z0-9\_]+$/,
+      class: /^[a-z0-9\-\_\ ]+$/,
+      data_id: /^[a-z0-9\_\.\-]+$/
     }
 
-    getter origin : Array(JSON::Type)
-    getter tags   : Array(Tag)
-    getter parent : Tag | Nil
-
-    def initialize(json)
-      initialize(nil, json)
+    def self.markup(data : Hash(String, JSON::Type))
+      State.new(data).origin["markup"]
     end
 
-    def initialize(@parent : Tag | Nil, json)
-      @tags = [] of Tag
-      @origin = [] of JSON::Type
-      markup = json.has_key?("markup") ? json["markup"] : nil
+    struct State
 
-      case markup
+      getter origin   : Hash(String, JSON::Type)
 
-      when Nil
-        raise Exception.new("Invalid json.")
+      def initialize(@origin)
+        raw         = @origin["markup"]?
+        self_markup = self
 
-      when Array(JSON::Type)
-        @origin = markup
-        @tags = origin.map { | raw |
-          Tag.new(self, raw)
-        }
+        case raw
 
-      else
-        raise Exception.new("Markup can only be an Array of tags.")
+        when Array(JSON::Type)
+          raw.each { | raw_tag |
+            Tag.tag(self_markup, raw_tag)
+          }
 
-      end # === case
+        when Nil
+          raise Exception.new("Invalid json.")
 
-    end # === def initialize
+        else
+          raise Exception.new("Markup can only be an Array of tags.")
 
-    def to_array
-      tags.map(&.to_hash)
-    end
+        end # === case
+      end # === def initialize
 
-  end # === class Markup
+    end # === struct State
 
+  end # === module Markup
 end # === module Mu_Html

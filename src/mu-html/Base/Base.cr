@@ -1,5 +1,4 @@
 
-require "./Validate"
 module Mu_Html
 
   module Base

@@ -1,34 +1,34 @@
 
 module Mu_Html
-
-  class Markup
-
+  module Markup
     module DIV
 
-      include Tag::Macro
+      extend Tag
 
-      def_tag do
+      def self.tag(parent, o : Hash(String, JSON::Type))
 
-        required "div" do
-          move_to "body" if is?(Is_Non_Empty_String)
-          delete if is_either?(nil, Is_Empty_String)
-          should_be !exists?
-        end
+        clean(o) do
 
-        attr "class" do
-          should_be(REGEX["class"])
-        end
+          key "div" do
+            move_to "body" if value?(A_Non_Empty_String)
+            delete if value?(nil) || value?(A_Empty_String)
+            is_invalid unless has_key?
+          end
 
-        attr "body" do
-          should_be is_either?(REGEX["data_id"], Array)
-          to_markup
-        end
+          key "class" do
+            is_invalid unless value?(A_Class)
+          end
+
+          key "body" do
+            is_invalid unless value?(A_Data_ID) || value.is_a?(Array)
+            to_tags(parent) if value.is_a?(Array)
+          end
+
+        end # === clean(o)
 
       end # === def_tag
 
     end # === module DIV
-
-  end # === class Markup
-
+  end # === module Markup
 end # === module Mu_Html
 

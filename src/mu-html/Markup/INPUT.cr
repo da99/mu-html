@@ -1,37 +1,42 @@
 
 module Mu_Html
 
-  class Markup
+  module Markup
 
     module INPUT
 
-      include Tag::Macro
+      extend Tag
 
       ALLOWED_TYPES = {"hidden"}
 
-      def_tag do
+      def self.tag(parent, o : Hash(String, JSON::Type))
+        clean(o) do
+          key "input" do
+            required
+            is_invalid unless value?(A_Data_ID)
+            move_to "value"
+          end
 
-        required "input" do
-          is_invalid unless is?(REGEX["data_id"])
-          move_to "value"
+          key "name" do
+            required
+            is_invalid unless value?(A_Non_Empty_String)
+          end
+
+          key "type" do
+            required
+            is_invalid unless ALLOWED_TYPES.includes?(value)
+          end
+
+          key "value" do
+            required
+            is_invalid unless value?(A_Data_ID)
+          end
         end
+      end # === def self.tag
 
-        required "name" do
-          is_invalid unless is?(Is_Non_Empty_String)
-        end
-
-        required "type" do
-          is_invalid unless ALLOWED_TYPES.includes?(value)
-        end
-
-        required "value" do
-          is_invalid unless is?(REGEX["data_id"])
-        end
-
-      end # === def_tag
 
     end # === module INPUT
 
-  end # === class Markup
+  end # === module Markup
 
 end # === module Mu_Html

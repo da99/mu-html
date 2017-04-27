@@ -1,36 +1,34 @@
 
 module Mu_Html
-
-  class Markup
-
+  module Markup
     module P
 
-      include Tag::Macro
+      extend Tag
 
-      def_tag do
+      def self.tag( parent, o )
 
-        required "p" do
-          move_to "body" if is?(Is_Non_Empty_String)
-          delete if exists? && is_either?(Is_Empty_String, nil)
-          is_invalid if exists?
-        end
+        clean(o) do
 
-        attr "class" do
-          is_invalid unless is?(REGEX["class"])
-        end
+          key( "p") do
+            move_to("body") if value?(A_Non_Empty_String)
+            delete if value?(A_Nothing)
+            is_invalid if has_key?
+          end
 
-        required "body" do
-          is_invalid unless is_either?(
-            REGEX["data_id"],
-            String,
-            Array(Hash(String, JSON::Type))
-          )
-        end
+          key("class") do
+            is_invalid unless value?(A_Class)
+          end
 
-      end # === def_tag
+          key("body") do
+            is_invalid unless value?(A_Data_ID) ||
+              value?(String) ||
+              value?( Array(Hash(String, JSON::Type)) )
+          end
+
+        end # === clean_keys
+
+      end # === def self.clean
 
     end # === module P
-
-  end # === class Markup
-
+  end # === module Markup
 end # === module Mu_Html

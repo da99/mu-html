@@ -1,32 +1,33 @@
 
 module Mu_Html
-
-  class Markup
-
+  module Markup
     module SPAN
 
-      include Tag::Macro
+      extend Tag
 
-      def_tag do
+      def self.tag(parent, o : Hash(String, JSON::Type))
 
-        required "span" do
-          move_to "body" if is?(Is_Non_Empty_String)
-          delete if exists? && is_either?(nil, Is_Empty_String)
+        clean(o) do
+          key "span" do
+            required
+            move_to "body" if value?(A_Non_Empty_String)
+            delete if has_key? && value?.nil? && value?(A_Empty_String)
+          end
+
+          key "class" do
+            is_invalid unless value?(A_Class)
+          end
+
+          key "body" do
+            delete if value?.nil? || value?(A_Empty_String)
+            if has_key?
+              is_invalid unless value?(A_Data_ID)
+            end
+          end
         end
 
-        attr "class" do
-          should_be(REGEX["class"])
-        end
-
-        attr "body" do
-          delete if is_either?(nil, Is_Empty_String)
-          should_be(is?(REGEX["data_id"])) if exists?
-        end
-
-      end # === def_tag
+      end # === def self.tag
 
     end # === module SPAN
-
-  end # === class Markup
-
+  end # === module Markup
 end # === module Mu_Html
