@@ -101,17 +101,6 @@ module Mu_Html
             end
           end
 
-          def is_data_id?
-            return false unless o.has_key?(k)
-            v = o[k]
-            case v
-            when String
-              v =~ IS_DATA_ID
-            else
-              false
-            end
-          end
-
           def empty?
             v = o[k]?
               case v
@@ -137,9 +126,10 @@ module Mu_Html
               v.each { |x|
                 clean_childs << Tag.tag(parent, x)
               }
-              clean_childs
+              o[k] = clean_childs
+              o
             when String
-              v
+              o
             else
               raise Exception.new("Invalid value for #{tag_name}: #{k} : #{v}")
             end

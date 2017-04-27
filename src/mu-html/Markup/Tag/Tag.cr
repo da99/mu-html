@@ -77,11 +77,12 @@ module Mu_Html
         raw.has_key?(tag_name)
       end
 
-      def clean(o : Hash(String, JSON::Type))
+      def clean(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
         o_state = State.new(tag_name, o)
         with o_state yield
         o["tag"] = tag_name unless o.has_key?("tag")
         o_state.keys_should_be_known
+        o
       end # === def clean
 
     end # === module Tag
