@@ -9,16 +9,15 @@ module Mu_Html
 
         clean(o) do
           key "span" do
-            required
             move_to "body" if value?(A_Non_Empty_String)
-            delete if has_key? && value?.nil? && value?(A_Empty_String)
+            delete if value?(A_Nothing)
           end
 
-          key "class" do
+          key? "class" do
             is_invalid unless value?(A_Class)
           end
 
-          key "body" do
+          key? "body" do
             delete if value?.nil? || value?(A_Empty_String)
             if has_key?
               is_invalid unless value?(A_Data_ID)

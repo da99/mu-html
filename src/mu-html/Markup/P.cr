@@ -9,13 +9,13 @@ module Mu_Html
 
         clean(o) do
 
-          key( "p") do
+          key("p") do
             move_to("body") if value?(A_Non_Empty_String)
-            delete if value?(A_Nothing)
+            delete if has_key? && value?(A_Nothing)
             is_invalid if has_key?
           end
 
-          key("class") do
+          key?("class") do
             is_invalid unless value?(A_Class)
           end
 

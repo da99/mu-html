@@ -20,14 +20,24 @@ module Mu_Html
         end # === def initialize
 
         def key(k : String)
-
           @keys << k
 
           state = Key::State.new(@tag_name, @origin, k)
-          with state yield
+          with state yield(state)
 
           @origin
         end # === def key
+
+        def key?(k : String)
+          @keys << k
+          return @origin unless @origin.has_key?(k)
+
+          key(k) do |state|
+            with state yield
+          end
+
+          @origin
+        end
 
         def keys_should_be_known
           @origin.each_key do |k|
@@ -41,9 +51,6 @@ module Mu_Html
       # ====================================================================
 
       def self.tag(parent : Markup::State | Tag::State, origin : Hash(String, JSON::Type))
-         # for tag in Markup.constants
-         #  .select { |x| Markup.constant(x).is_a?(TypeNode) }
-         #  .select { |x| Markup.constant(x).class.methods.map(&.name.stringify).includes?("tag?") }
         {%
          for tag in @type.constant(:TAGS)
         %}
@@ -62,7 +69,7 @@ module Mu_Html
       end # === def tag
 
       def tag_name
-        {{ @type.name.downcase.stringify }}
+        {{ @type.name.downcase.split("::").last }}
       end
 
       def tag?(raw : Hash)

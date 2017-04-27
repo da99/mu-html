@@ -11,11 +11,15 @@ module Mu_Html
 
           key "div" do
             move_to "body" if value?(A_Non_Empty_String)
-            delete if value?(nil) || value?(A_Empty_String)
-            is_invalid unless has_key?
+
+            if has_key? && (value?(nil) || value?(A_Empty_String))
+              delete
+            end
+
+            is_invalid if has_key?
           end
 
-          key "class" do
+          key? "class" do
             is_invalid unless value?(A_Class)
           end
 

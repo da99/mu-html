@@ -1,76 +1,6 @@
 
 module Mu_Html
   module Markup
-
-    module A_Empty_String
-
-      def self.==(str : String)
-        str.strip.empty?
-      end
-
-      def self.==(o)
-        false
-      end
-
-    end # === class Empty_String
-
-    module A_Non_Empty_String
-
-      def self.==(k)
-        v = k.value
-        v.is_a?(String) && v.strip.empty?
-      end
-
-    end # === module A_Non_Empty_String
-
-    module A_Empty_Array
-
-      def self.==(k)
-        v = k.value
-        v.is_a?(Array) && v.empty?
-      end
-
-    end # === module A_Empty_Array
-
-    module A_Empty_Hash
-
-      def self.==(k)
-        v = k.value
-        v.is_a?(Hash) && v.empty?
-      end
-
-    end # === module A_Empty_Hash
-
-    module A_Nothing
-
-      def self.==(k)
-        A_Non_Empty_String.==(k) ||
-          A_Empty_Array.==(k) ||
-          A_Empty_Hash.==(k) ||
-          k.value.nil?
-      end
-
-    end # === module A_Nothing
-
-    module A_Class
-
-      def self.==(k)
-        v = k.value
-        v.is_a?(String) && v =~ REGEX[:class]
-      end
-
-    end # === module A_Class
-
-    module A_Data_ID
-
-      def self.==(k)
-        v = k.value
-        v.is_a?(String) && v =~ REGEX[:data_id]
-      end
-
-    end # === module A_Data_ID
-
-
     module Tag
       module Key
 
@@ -103,7 +33,7 @@ module Mu_Html
             when u
               true
             else
-              u == self
+              u == value?
             end
           end
 
@@ -136,8 +66,8 @@ module Mu_Html
             raise Exception.new("Key defined twice in #{tag_name}: #{from}, #{to}") if o.has_key?(to)
             raise Exception.new("Missing key in #{tag_name}: #{key}") unless o.has_key?(from)
             v = o[from]
-            o.delete(from)
             o[to] = v
+            o.delete(from)
             o
           end
 
@@ -152,7 +82,7 @@ module Mu_Html
           end # === def required
 
           def is_invalid
-            raise Exception.new("Invalid key in #{tag_name}: #{k} (#{o[k]?.class})")
+            raise Exception.new("Invalid key in #{tag_name}: #{k}: #{value?.inspect[0..10]} (#{value?.class})")
             o
           end # === def is_invalid
 
