@@ -5,8 +5,8 @@ module Mu_Html
 
     SECTIONS = {"title", "layout"}
 
-    def self.parse(json : Hash)
-      return({} of String => JSON::Type) unless json.has_key?("meta")
+    def self.clean(json : Hash)
+      return(nil) unless json.has_key?("meta")
 
       meta = json["meta"]
       case meta

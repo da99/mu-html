@@ -1,6 +1,6 @@
 
 require "./A"
-require "./Tag/Tag"
+require "./Tag"
 
 # === Include the tags: =======
 require "./P"
@@ -21,8 +21,10 @@ module Mu_Html
       data_id: /^[a-z0-9\_\.\-]+$/
     }
 
-    def self.markup(data : Hash(String, JSON::Type))
-      State.new(data).markup
+    def self.clean(data : Hash(String, JSON::Type))
+      return nil unless data.has_key?("markup")
+      State.new(data)
+      nil
     end
 
     struct State
@@ -39,14 +41,14 @@ module Mu_Html
           raw.each { | raw_tag |
             case raw_tag
             when Hash(String, JSON::Type)
-              Tag.tag(self_markup, raw_tag)
+              Tag.clean(self_markup, raw_tag)
             else
               raise Exception.new("Invalid value: #{raw_tag}")
             end
           }
 
         when Nil
-          raise Exception.new("Invalid json.")
+          raise Exception.new("Invalid markup.")
 
         else
           raise Exception.new("Markup can only be an Array of tags.")

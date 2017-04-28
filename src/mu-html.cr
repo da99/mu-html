@@ -19,7 +19,7 @@ end # === OptionParser
 json = Mu_Html.parse(file)
 case json
 when nil
-  puts ("invalid json")
+  puts ("Parse error: invalid json")
   Process.exit(2)
 else
   puts json
@@ -44,19 +44,18 @@ module Mu_Html
 
     json = JSON.parse_raw(source)
 
-    json = case json
-           when Hash
-             Base.allowed_keys(SECTIONS, json)
-             {
-               "meta": Meta.parse(json),
-               "data": Data.parse(json),
-               "markup": Markup.markup(json),
-               "style": Style.parse(json)
-             }
-           else
-             raise Exception.new("A key/value data structure was not found.")
-           end # === case json
+    case json
+    when Hash
+      Base.allowed_keys(SECTIONS, json)
+      Meta.clean(json)
+      Data.clean(json)
+      Markup.clean(json)
+      Style.clean(json)
+    else
+      raise Exception.new("A key/value data structure was not found.")
+    end # === case json
 
+    json
   end # === def parse
 
   def read_file(path : String)

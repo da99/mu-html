@@ -3,7 +3,7 @@ module Mu_Html
 
   module Data
 
-    def self.parse(json : Hash(String, JSON::Type) )
+    def self.clean(json : Hash(String, JSON::Type) )
       data = json.has_key?("data") ? json["data"] : nil
       case json["data"]
       when Hash

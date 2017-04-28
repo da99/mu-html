@@ -3,7 +3,7 @@ module Mu_Html
 
   module Style
 
-    def self.parse(json)
+    def self.clean(json)
       nil
     end
 

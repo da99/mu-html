@@ -127,7 +127,7 @@ module Mu_Html
               v.each { |x|
                 case x
                 when Hash(String, JSON::Type)
-                  clean_childs << Tag.tag(this_state, x)
+                  clean_childs << Tag.clean(this_state, x)
                 else
                   raise Exception.new("Invalid value for body: #{x}")
                 end
