@@ -16,8 +16,8 @@ module Mu_Html
   module Markup
 
     REGEX = {
-      id: /^[a-z0-9\_]+$/,
-      class: /^[a-z0-9\-\_\ ]+$/,
+      id:      /^[a-z0-9\_]+$/,
+      class:   /^[a-z0-9\-\_\ ]+$/,
       data_id: /^[a-z0-9\_\.\-]+$/
     }
 
