@@ -118,20 +118,26 @@ module Mu_Html
             o
           end
 
-          def to_tags(parent)
+          def to_tags
+            this_state = self
             v = value
             case v
-            when Array(JSON::Type)
+            when Array(Hash(String, JSON::Type)), Array(JSON::Type)
               clean_childs = [] of JSON::Type
               v.each { |x|
-                clean_childs << Tag.tag(parent, x)
+                case x
+                when Hash(String, JSON::Type)
+                  clean_childs << Tag.tag(this_state, x)
+                else
+                  raise Exception.new("Invalid value for body: #{x}")
+                end
               }
               o[k] = clean_childs
               o
             when String
               o
             else
-              raise Exception.new("Invalid value for #{tag_name}: #{k} : #{v}")
+              raise Exception.new("Invalid value for #{tag_name}: #{k} : #{v} #{typeof(v)}")
             end
           end # === def to_tags
 

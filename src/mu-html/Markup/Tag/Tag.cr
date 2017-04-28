@@ -2,23 +2,35 @@
 require "./Key"
 
 module Mu_Html
+
+  macro def_tag(&block)
+    {% name = block.filename.split("/").last.split(".cr").first.downcase  %}
+    module Markup
+      module Tag
+        struct State
+          def tag_of_{{name.id}}
+            {{yield}}
+            keys_should_be_known
+            tag
+          end
+        end
+      end
+    end # === module Markup
+  end # === macro def_Tag
+
   module Markup
     module Tag
-
-      TAGS = [] of String
-
-      macro extended
-        {{ Tag::TAGS << @type.name.stringify }}
-      end # === macro extended
-
       struct State
 
-        @tag_name : String
-        @keys : Array(String)
-
-        def initialize(@tag_name, @origin : Hash(String, JSON::Type))
-          @keys = ["tag"]
+        def initialize(@tag_name : String, @parent : Key::State | Markup::State, @origin : Hash(String, JSON::Type))
+          @keys = ["tag"] of String
+          raise Exception.new("Invalid tag: #{@tag_name}: tag") if @origin.has_key?("tag")
+          @origin["tag"] = @tag_name
         end # === def initialize
+
+        def tag
+          @origin
+        end
 
         def key(k : String)
           @keys << k
@@ -48,42 +60,18 @@ module Mu_Html
 
       end # === struct State
 
-      # ====================================================================
-      # ====================================================================
-
-      def self.tag(parent : Markup::State | Tag::State, origin : Hash(String, JSON::Type))
-        {%
-         for tag in @type.constant(:TAGS)
-        %}
-
-        if {{tag.id}}.tag?(origin)
-          return {{tag.id}}.tag(parent, origin)
-        end
-
+      def self.tag(parent, raw : Hash(String, JSON::Type))
+        {% for m in Tag::State.methods.map(&.name).select { |x| x[0..6] == "tag_of_" } %}
+          {% meth = m[7..-1].stringify %}
+          if raw.has_key?({{meth}})
+            t = Tag::State.new({{meth}}, parent, raw)
+            t.tag_of_{{meth.id}}
+            return t.tag
+          end
         {% end %}
 
-        raise Exception.new("Unknown tag with keys: #{origin.keys}")
-      end # === def initialize
-
-      def self.tag(*args)
-        raise Exception.new("Invalid tag: #{args.last}")
-      end # === def tag
-
-      def tag_name
-        {{ @type.name.downcase.split("::").last }}
-      end
-
-      def tag?(raw : Hash)
-        raw.has_key?(tag_name)
-      end
-
-      def clean(o : Hash(String, JSON::Type)) : Hash(String, JSON::Type)
-        o_state = State.new(tag_name, o)
-        with o_state yield
-        o["tag"] = tag_name unless o.has_key?("tag")
-        o_state.keys_should_be_known
-        o
-      end # === def clean
+        raise Exception.new("Unknown tag with keys: #{raw.keys}")
+      end # === def self.tag
 
     end # === module Tag
   end # === module Markup

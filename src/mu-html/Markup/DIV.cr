@@ -1,38 +1,28 @@
 
 module Mu_Html
-  module Markup
-    module DIV
 
-      extend Tag
+  def_tag do
 
-      def self.tag(parent, o : Hash(String, JSON::Type))
+    key "div" do
+      move_to "body" if value?(A_Non_Empty_String)
 
-        clean(o) do
+      if has_key? && (value?(nil) || value?(A_Empty_String))
+        delete
+      end
 
-          key "div" do
-            move_to "body" if value?(A_Non_Empty_String)
+      is_invalid if has_key?
+    end
 
-            if has_key? && (value?(nil) || value?(A_Empty_String))
-              delete
-            end
+    key? "class" do
+      is_invalid unless value?(A_Class)
+    end
 
-            is_invalid if has_key?
-          end
+    key "body" do
+      is_invalid unless value?(A_Data_ID) || value.is_a?(Array)
+      to_tags if value.is_a?(Array)
+    end
 
-          key? "class" do
-            is_invalid unless value?(A_Class)
-          end
+  end # === def_tag
 
-          key "body" do
-            is_invalid unless value?(A_Data_ID) || value.is_a?(Array)
-            to_tags(parent) if value.is_a?(Array)
-          end
-
-        end # === clean(o)
-
-      end # === def_tag
-
-    end # === module DIV
-  end # === module Markup
 end # === module Mu_Html
 

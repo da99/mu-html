@@ -22,7 +22,7 @@ module Mu_Html
     }
 
     def self.markup(data : Hash(String, JSON::Type))
-      State.new(data).origin["markup"]
+      State.new(data).markup
     end
 
     struct State
@@ -37,7 +37,12 @@ module Mu_Html
 
         when Array(JSON::Type)
           raw.each { | raw_tag |
-            Tag.tag(self_markup, raw_tag)
+            case raw_tag
+            when Hash(String, JSON::Type)
+              Tag.tag(self_markup, raw_tag)
+            else
+              raise Exception.new("Invalid value: #{raw_tag}")
+            end
           }
 
         when Nil
@@ -48,6 +53,10 @@ module Mu_Html
 
         end # === case
       end # === def initialize
+
+      def markup
+        @origin["markup"]
+      end
 
     end # === struct State
 
