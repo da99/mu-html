@@ -31,6 +31,8 @@ else
   else
     puts "Not HTML."
   end
+  puts "============= Style: ============"
+  puts Mu_Html::Style.to_style(json)
 end
 # ==========================================
 

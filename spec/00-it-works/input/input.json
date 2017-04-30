@@ -13,6 +13,18 @@
     "names": ["Dana", "Jon", "Phil"]
   },
 
+  "style" : {
+    "background": "1px red solid",
+    "background-image" : "none",
+    "div p, #id:first-line" : { "box": "4px" },
+    "@media (min-width: 801px)" : {
+      "body" : {
+        "margin": "0 auto",
+        "width": "800px"
+      }
+    }
+  },
+
   "markup" : [
     {"p": null, "body": "main.msg1"},
     {"p": "main.msg2"},
