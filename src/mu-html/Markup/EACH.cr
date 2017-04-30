@@ -1,5 +1,18 @@
 
 module Mu_Html
+
+  def_html do
+    io << "{{#"
+    io << about["in"]
+    io << "}}"
+
+    string_or_tags
+
+    io << "{{/"
+    io << about["in"]
+    io << "}}"
+  end # === def_html
+
   def_tag do
     key "each" do
       is_invalid unless value?(A_Data_ID)
@@ -18,5 +31,6 @@ module Mu_Html
       is_invalid unless value.is_a?(Array(JSON::Type))
       to_tags
     end
-  end
+  end # === def_tag
+
 end # === module Mu_Html

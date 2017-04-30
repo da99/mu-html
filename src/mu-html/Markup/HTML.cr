@@ -2,10 +2,10 @@
 require "html"
 
 module Mu_Html
-  module Markup
 
-    macro def_html(&block)
-      {% name = block.filename.split("/").last.split(".cr").first.downcase %}
+  macro def_html(&block)
+    {% name = block.filename.split("/").last.split(".cr").first.downcase %}
+    module Markup
       module HTML
         struct State
           def to_html_{{name.id}}
@@ -13,7 +13,10 @@ module Mu_Html
           end
         end
       end # === module HTML
-    end # === macro def_html
+    end # === module Markup
+  end # === macro def_html
+
+  module Markup
 
     module HTML
 
@@ -33,9 +36,10 @@ module Mu_Html
       struct State
 
         getter tag_name
+        getter io
 
         def initialize(@origin : Hash(String, JSON::Type))
-          @str = IO::Memory.new
+          @io = IO::Memory.new
 
           v = @origin["tag"]?
           case v
@@ -56,29 +60,22 @@ module Mu_Html
           to_html_tag
         end # === def initialize
 
-        def tag
-          body = yield
-          @str << "<"
-          @str << tag_name
-          @str << ">"
-          @str << body
-          @str << "</"
-          @str << tag_name
-          @str << ">"
-          @str
+        def about
+          @origin
         end
 
         def tag(*attrs)
-          body = yield
-          @str << "<"
-          @str << tag_name
-          @str << to_attrs(*attrs)
-          @str << ">"
-          @str << body
-          @str << "</"
-          @str << tag_name
-          @str << ">"
-          @str
+          @io << "<"
+          @io << tag_name
+          unless attrs.empty?
+            @io << to_attrs(*attrs)
+          end
+          @io << ">"
+          yield
+          @io << "</"
+          @io << tag_name
+          @io << ">"
+          @io
         end
 
         def to_attrs(*keys)
@@ -105,7 +102,8 @@ module Mu_Html
         end
 
         def to_s
-          @str.to_s
+          str = @io.to_s
+          str
         end # === def to_html
 
         def string_or_tags
@@ -118,10 +116,9 @@ module Mu_Html
           v = h[k]
           case v
           when String
-            v
+            @io << v
           when Array(Hash(String, JSON::Type)), Array(JSON::Type)
-            str = HTML.to_html(v)
-            str
+            @io << HTML.to_html(v)
           else
             raise Exception.new("Invalid value for content: #{v} (#{v.class})")
           end
