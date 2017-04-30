@@ -58,7 +58,6 @@ module Mu_Html
         spacer
         @io << k
 
-        spacer
         case v
         when String
           @io << ": "

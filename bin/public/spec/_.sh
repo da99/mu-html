@@ -5,6 +5,35 @@ spec () {
   SPEC_TMP="$THIS_DIR/tmp/spec/run"
 
   case "$1" in
+    dirs-must-match)
+      shift
+      input="$(realpath "$1")"; shift
+      output="$(realpath "$1")"; shift
+
+      IFS=$'\n'
+      cd "$input"
+      for FILE in $(find -L "." -type f); do
+        cd "$output"
+        if [[ ! -e "$FILE" ]]; then
+          echo "!!! File in input, but not in output: $FILE" >&2
+          exit 2
+        fi
+        if ! diff "$input/$FILE" "$FILE" ; then
+          echo "!!! File input != output: $FILE"
+          exit 2
+        fi
+      done
+
+      cd "$output"
+      for FILE in $(find -L "." -type f); do
+        cd "$input"
+        if [[ ! -e "$FILE" ]]; then
+          echo "!!! File in output, but not in input: $FILE" >&2
+          exit 2
+        fi
+      done
+      ;;
+
     bin-path)
       echo "$SPEC_TMP"/mu-html.spec
       ;;

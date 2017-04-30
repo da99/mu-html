@@ -9,7 +9,13 @@ watch () {
     sleep 0.5
     OUTPUT_DIR="$THIS_DIR/tmp/spec/output"
     mkdir -p "$OUTPUT_DIR"
-    "$(bin/mu-html spec bin-path)" --output "$OUTPUT_DIR" --file spec/00-it-works/input/input.json
+
+    SPEC_BIN_PATH="$(bin/mu-html spec bin-path)"
+    IFS=$'\n'
+    for SPEC_DIR in $(find -L "spec" -type d -mindepth 1 -maxdepth 1); do
+      "$SPEC_BIN_PATH" --output "$OUTPUT_DIR" --file "$SPEC_DIR"/input/input.json
+      bin/mu-html spec dirs-must-match "$SPEC_DIR"/output "$OUTPUT_DIR"
+    done
     echo "============================================="
     echo ""
 
