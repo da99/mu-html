@@ -114,7 +114,13 @@ module Mu_Html
           end
 
           def strip
-            o[k] = v.strip
+            v = value
+            case v
+            when String
+              o[k] = v.strip
+            else
+              raise Exception.new("Not a string: #{key}")
+            end
             o
           end
 

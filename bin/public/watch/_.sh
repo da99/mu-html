@@ -1,15 +1,15 @@
 
 # === {{CMD}}
 watch () {
-
-  PATH="$PATH:$THIS_DIR/../my_crystal_lang/progs/latest-crystal/bin"
-  PATH="$PATH:$THIS_DIR/../my_crystal_lang/progs/latest-shards/bin"
+  source "$THIS_DIR/dev/paths.sh"
 
   if [[ ! -z "$@" ]]; then
     echo "=== Compiling... $(date "+%H:%M:%S") ..." >&2
-    bin/mu-html dev
+    bin/mu-html spec compile
     sleep 0.5
-    tmp/mu-html --file spec/00-it-works/input/input.json
+    OUTPUT_DIR="$THIS_DIR/tmp/spec/output"
+    mkdir -p "$OUTPUT_DIR"
+    "$(bin/mu-html spec bin-path)" --output "$OUTPUT_DIR" --file spec/00-it-works/input/input.json
     echo "============================================="
     echo ""
 
@@ -21,7 +21,7 @@ watch () {
       exit 2
     fi
     "$(basename "$THIS_DIR")" watch run || :
-    mksh_setup watch "-r src -r spec -r $THIS_DIR/bin/public/watch" "$(basename "$THIS_DIR") watch run"
+    mksh_setup watch "-r src -r spec -r bin" "$(basename "$THIS_DIR") watch run"
   fi
 
 } # === end function

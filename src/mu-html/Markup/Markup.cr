@@ -4,6 +4,7 @@ require "./Tag"
 require "./HTML"
 
 # === Include the tags: =======
+require "./Page_Title"
 require "./P"
 require "./DIV"
 require "./EACH"
@@ -27,6 +28,30 @@ module Mu_Html
       State.new(data)
       nil
     end
+
+    def self.to_html(origin : Hash(String, JSON::Type))
+      fin = IO::Memory.new
+      tags = origin["markup"]
+      case tags
+      when Array(JSON::Type)
+        to_html(tags)
+      else
+        raise Exception.new("invalid markup: #{tags.inspect}")
+      end
+    end # === def self.to_html
+
+    def self.to_html(tags : Array(JSON::Type))
+      fin = IO::Memory.new
+      tags.each do |t|
+        case t
+        when Hash(String, JSON::Type)
+          fin << HTML::State.new(t).to_s
+        else
+          raise Exception.new("invalid tag: #{t.class}")
+        end
+      end
+      fin.to_s
+    end # === def self.to_html
 
     struct State
 

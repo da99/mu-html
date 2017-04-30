@@ -26,6 +26,7 @@
   },
 
   "markup" : [
+    {"page-title": "Hello, Test 00"},
     {"p": null, "body": "main.msg1"},
     {"p": "main.msg2"},
     {"div": null, "class":"column", "body": [

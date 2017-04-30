@@ -1,7 +1,21 @@
 
 # === {{CMD}}  new  name-of-spec
 spec () {
+  source "$THIS_DIR/dev/paths.sh"
+  SPEC_TMP="$THIS_DIR/tmp/spec/run"
+
   case "$1" in
+    bin-path)
+      echo "$SPEC_TMP"/mu-html.spec
+      ;;
+
+    compile)
+      mkdir -p "$SPEC_TMP"
+      cd "$SPEC_TMP"
+      crystal build "$THIS_DIR/spec/mu-html.spec.cr"
+      echo "=== Wrote: $SPEC_TMP/mu-html.spec"
+      ;;
+
     new)
       shift
       cd "$THIS_DIR"

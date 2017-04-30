@@ -24,9 +24,10 @@ module Mu_Html
 
       def self.clean(parent, raw : Hash(String, JSON::Type))
         {% for m in Tag::State.methods.map(&.name).select { |x| x[0..6] == "tag_of_" } %}
-          {% meth = m[7..-1].stringify %}
-          if raw.has_key?({{meth}})
-            t = Tag::State.new({{meth}}, parent, raw)
+          {% tag_name = m[7..-1].gsub(/_/, "-").stringify %}
+          {% meth     = m[7..-1].stringify %}
+          if raw.has_key?({{tag_name}})
+            t = Tag::State.new({{tag_name}}, parent, raw)
             t.tag_of_{{meth.id}}
             return t.tag
           end

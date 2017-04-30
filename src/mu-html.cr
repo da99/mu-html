@@ -1,40 +1,11 @@
 
+require "json"
 require "./mu-html/Base/Base"
 require "./mu-html/Data/Data"
 require "./mu-html/Markup/Markup"
 require "./mu-html/Meta/Meta"
 require "./mu-html/Style/Style"
-
-require "option_parser"
-require "json"
-
-file = "none"
-
-OptionParser.parse! do |parser|
-  parser.banner = "Usage: mu-html [arguments]"
-  parser.on("--file FILE", "File to process.") { |f| file = f }
-end # === OptionParser
-
-# ====== Scratchpad =======================
-json = Mu_Html.parse(file)
-case json
-when nil
-  puts ("Parse error: invalid json")
-  Process.exit(2)
-else
-  puts json
-  puts "============="
-  v = json["markup"]
-  case v
-  when Array(JSON::Type)
-    puts Mu_Html::Markup::HTML.to_html(v)
-  else
-    puts "Not HTML."
-  end
-  puts "============= Style: ============"
-  puts Mu_Html::Style.to_style(json)
-end
-# ==========================================
+require "./mu-html/Script/Script"
 
 module Mu_Html
 

@@ -20,19 +20,6 @@ module Mu_Html
 
     module HTML
 
-      def self.to_html(tags : Array(JSON::Type))
-        fin = IO::Memory.new
-        tags.each do |t|
-          case t
-          when Hash(String, JSON::Type)
-            fin << HTML::State.new(t).to_s
-          else
-            raise Exception.new("invalid tag: #{t.class}")
-          end
-        end
-        fin.to_s
-      end # === def self.to_html
-
       struct State
 
         getter tag_name
@@ -118,7 +105,7 @@ module Mu_Html
           when String
             @io << v
           when Array(Hash(String, JSON::Type)), Array(JSON::Type)
-            @io << HTML.to_html(v)
+            @io << Markup.to_html(v)
           else
             raise Exception.new("Invalid value for content: #{v} (#{v.class})")
           end

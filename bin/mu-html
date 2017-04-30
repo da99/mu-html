@@ -2,7 +2,7 @@
 #
 #
 THE_ARGS="$@"
-THIS_DIR="$(dirname "$(dirname "$0")")"
+THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
 ACTION="[none]"
 if [[ ! -z "$@" ]]; then

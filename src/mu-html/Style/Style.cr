@@ -2,30 +2,51 @@
 module Mu_Html
   module Style
 
-    def self.to_style(json : Hash(String, JSON::Type))
+    COMMON_ID = /[\#\.a-z0-9\-\_]+/
+    COMMON_VALUE = /[\!a-z0-9\-\_\ ]+/
+
+    def self.to_css(json : Hash(String, JSON::Type))
       style = json["style"]
       return nil unless style
       case style
       when Hash(String, JSON::Type)
-        State.new(style).to_s
+        State.new(style).to_css
       else
         raise Exception.new("Invalid value for style: #{style}")
       end
     end # === def self.to_style
 
-    def self.clean(json)
-      nil
-    end
+    def self.clean(json : Hash(String, JSON::Type))
+      raw = json["style"]?
+      return json unless raw
+      case raw
+      when Hash(String, JSON::Type)
+        raw.each { |k, v|
+          raise Exception.new("Invalid value: #{k}, #{v}") unless clean?(k,v)
+        }
+      end
+      json
+    end # === def self.clean
+
+    def self.clean?(k, v)
+      case
+      when k.is_a?(String) && v.is_a?(String) && k =~ COMMON_ID && v =~ COMMON_VALUE
+        true
+      when k.is_a?(String) && k =~ COMMON_ID && v.is_a?(Hash)
+        v.all? { |ik, iv| clean?(ik, iv) }
+      else
+        false
+      end
+    end # === def self.clean?
 
     struct State
 
-      COMMON_ID = /[\#\.a-z0-9\-\_]+/
-      COMMON_VALUE = /[\!a-z0-9\-\_\ ]+/
+      getter origin
 
-      def to_s
+      def to_css
         append(@origin)
         @io.to_s
-      end # === def to_s
+      end # === def to_css
 
       private def spacer
         @indent.times do |i|
@@ -65,32 +86,12 @@ module Mu_Html
           raise Exception.new("Invalid value: #{v.inspect}")
 
         end # === case
-      end # === def to_s(v)
+      end # === def appead(v)
 
       def initialize(@origin : Hash(String, JSON::Type))
         @io = IO::Memory.new
         @indent = 0
-        clean
       end # === def initialize
-
-      def clean?(k, v)
-        case
-        when k.is_a?(String) && v.is_a?(String) && k =~ COMMON_ID && v =~ COMMON_VALUE
-          true
-        when k.is_a?(String) && k =~ COMMON_ID && v.is_a?(Hash)
-          v.all? { |ik, iv| clean?(ik, iv) }
-        else
-          false
-        end
-      end # === def clean?
-
-      def clean
-        @origin.each { |k, v|
-          if !clean?(k,v)
-            raise Exception.new("Invalid value: #{k}, #{v}")
-          end
-        }
-      end # === def clean
 
     end # === struct State
   end # === module Style
