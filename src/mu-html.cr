@@ -23,6 +23,14 @@ when nil
   Process.exit(2)
 else
   puts json
+  puts "============="
+  v = json["markup"]
+  case v
+  when Array(JSON::Type)
+    puts Mu_Html::Markup::HTML.to_html(v)
+  else
+    puts "Not HTML."
+  end
 end
 # ==========================================
 

@@ -1,6 +1,7 @@
 
 require "./A"
 require "./Tag"
+require "./HTML"
 
 # === Include the tags: =======
 require "./P"
