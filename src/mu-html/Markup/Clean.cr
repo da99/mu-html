@@ -16,7 +16,11 @@ module Mu_Html
 
       def initialize(@origin, @tag)
         @keys = [] of String
+        @tag_name = "unknown"
+        clean_tag!
+      end # === def initialize
 
+      private def clean_tag!
         {% for m in Clean_Tags.methods.map(&.name).select { |x| x[0..6] == "tag_of_" } %}
           {% tag_name = m[7..-1].gsub(/_/, "-").stringify %}
           {% meth     = m[7..-1].stringify %}
@@ -26,16 +30,10 @@ module Mu_Html
             return
           end
         {% end %}
-
-        @tag_name = "unknown"
-      end # === def initialize
+      end # === def clean_tag!
 
       def markup
         @origin["markup"]
-      end
-
-      def tag
-        @origin
       end
 
       def key(k : String)
@@ -59,8 +57,8 @@ module Mu_Html
       end
 
       def keys_should_be_known
-        @origin.each_key do |k|
-          Key::State.new(@tag_name, @origin, k).is_invalid unless @keys.includes?(k)
+        @tag.each_key do |k|
+          Key.new(self, @origin, @tag_name, k).is_invalid unless @keys.includes?(k)
         end
       end # === def keys_should_be_known
 

@@ -5,7 +5,7 @@ module Mu_Html
     key("page-title") do
       strip
       is_invalid unless value?(A_Non_Empty_String)
-      page_title(value)
+      page_title!
       delete
     end
   end

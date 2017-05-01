@@ -58,7 +58,6 @@ module Mu_Html
 
       end # === case
 
-      raise Exception.new("Unknown tag with keys: #{raw.keys}")
       nil
     end
 
