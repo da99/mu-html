@@ -5,6 +5,7 @@ module Mu_Html
 
     struct Fragment
 
+      IGNORED_TAGS = {"page-title", "meta"}
       getter io
       getter parent
 
@@ -14,6 +15,7 @@ module Mu_Html
         @tags.each { |t|
           case t
           when Hash(String, JSON::Type)
+            next if IGNORED_TAGS.includes?(t["tag"]?)
             Node.new(@io, t, this_fragment)
           else
             raise Exception.new("Invalid tag: #{t.inspect}")

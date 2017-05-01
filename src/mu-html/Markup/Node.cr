@@ -4,12 +4,12 @@ module Mu_Html
 
     struct Node
 
-      getter parent
-      getter tag
-      getter io
-      getter tag_name
+      getter parent   : Fragment
+      getter tag      : Hash(String, JSON::Type)
+      getter io       : IO::Memory
+      getter tag_name : String
 
-      def initialize(@io : IO::Memory, @tag : Hash(String, JSON::Type), @parent : Fragment)
+      def initialize( @io, @tag, @parent )
         v = @tag["tag"]?
 
         case v

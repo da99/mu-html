@@ -12,7 +12,7 @@ watch () {
 
     SPEC_BIN_PATH="$(bin/mu-html spec bin-path)"
     IFS=$'\n'
-    for SPEC_DIR in $(find -L "spec" -type d -mindepth 1 -maxdepth 1); do
+    for SPEC_DIR in $(find -L "spec" -mindepth 1 -maxdepth 1 -type d ); do
       "$SPEC_BIN_PATH" --output "$OUTPUT_DIR" --file "$SPEC_DIR"/input/input.json
       bin/mu-html spec dirs-must-match "$SPEC_DIR"/output "$OUTPUT_DIR"
     done

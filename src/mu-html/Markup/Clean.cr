@@ -18,6 +18,7 @@ module Mu_Html
         @keys = [] of String
         @tag_name = "unknown"
         clean_tag!
+        @tag["tag"] = @tag_name
       end # === def initialize
 
       private def clean_tag!
