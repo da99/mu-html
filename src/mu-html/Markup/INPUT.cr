@@ -3,7 +3,7 @@ module Mu_Html
 
   TAG_OF_INPUT_ALLOWED_TYPES = {"hidden"}
 
-  def_tag do
+  def_markup do
     key "input" do
       is_invalid unless value?(A_Data_ID)
       move_to "value"

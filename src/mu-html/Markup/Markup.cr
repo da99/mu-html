@@ -1,7 +1,14 @@
 
+require "html"
+
 require "./A"
-require "./Tag"
-require "./HTML"
+require "./macro"
+require "./Clean"
+require "./Key"
+require "./Page"
+require "./Fragment"
+require "./Node"
+
 
 # === Include the tags: =======
 require "./Page_Title"
@@ -14,7 +21,6 @@ require "./SPAN"
 # =============================
 
 module Mu_Html
-
   module Markup
 
     REGEX = {
@@ -25,68 +31,53 @@ module Mu_Html
 
     def self.clean(data : Hash(String, JSON::Type))
       return nil unless data.has_key?("markup")
-      State.new(data)
+
+      raise Exception.new("markup.meta already defined.") if data.has_key?("markup.meta")
+      data["markup.meta"] = {
+      } of String => JSON::Type
+
+      raw = to_array(data)
+
+      case raw
+
+      when Array(JSON::Type)
+        raw.each { | raw_tag |
+          case raw_tag
+          when Hash(String, JSON::Type)
+            Clean.new(data, raw_tag)
+          else
+            raise Exception.new("Invalid value: #{raw_tag}")
+          end
+        }
+
+      when Nil
+        raise Exception.new("Invalid markup.")
+
+      else
+        raise Exception.new("Markup can only be an Array of tags.")
+
+      end # === case
+
+      raise Exception.new("Unknown tag with keys: #{raw.keys}")
       nil
     end
 
     def self.to_html(origin : Hash(String, JSON::Type))
-      fin = IO::Memory.new
-      tags = origin["markup"]
-      case tags
+      Page.new(origin).to_s
+    end # === def self.to_html
+
+    def self.to_array(raw : Hash(String, JSON::Type)) : Array(JSON::Type)
+      r = raw["markup"]
+      case r
       when Array(JSON::Type)
-        to_html(tags)
+        tags = r
       else
-        raise Exception.new("invalid markup: #{tags.inspect}")
+        tags = [] of JSON::Type
+        raise Exception.new("invalid markup: (#{r.class}) #{r.inspect}")
       end
-    end # === def self.to_html
+      tags
+    end
 
-    def self.to_html(tags : Array(JSON::Type))
-      fin = IO::Memory.new
-      tags.each do |t|
-        case t
-        when Hash(String, JSON::Type)
-          fin << HTML::State.new(t).to_s
-        else
-          raise Exception.new("invalid tag: #{t.class}")
-        end
-      end
-      fin.to_s
-    end # === def self.to_html
-
-    struct State
-
-      getter origin   : Hash(String, JSON::Type)
-
-      def initialize(@origin)
-        raw         = @origin["markup"]?
-        self_markup = self
-
-        case raw
-
-        when Array(JSON::Type)
-          raw.each { | raw_tag |
-            case raw_tag
-            when Hash(String, JSON::Type)
-              Tag.clean(self_markup, raw_tag)
-            else
-              raise Exception.new("Invalid value: #{raw_tag}")
-            end
-          }
-
-        when Nil
-          raise Exception.new("Invalid markup.")
-
-        else
-          raise Exception.new("Markup can only be an Array of tags.")
-
-        end # === case
-      end # === def initialize
-
-      def markup
-        @origin["markup"]
-      end
-
-    end # === struct State
 
   end # === module Markup
 end # === module Mu_Html

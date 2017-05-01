@@ -1,6 +1,6 @@
 
 module Mu_Html
-  def_tag do
+  def_markup do
     key "footer" do
       move_to "body" if value?(A_Non_Empty_String)
       delete if has_key? && value?(nil) || value?(A_Empty_String)

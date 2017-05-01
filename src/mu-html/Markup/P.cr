@@ -1,6 +1,6 @@
 
 module Mu_Html
-  def_tag do
+  def_markup do
 
     key("p") do
       move_to("body") if value?(A_Non_Empty_String)

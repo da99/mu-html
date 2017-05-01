@@ -13,7 +13,7 @@ module Mu_Html
     io << "}}"
   end # === def_html
 
-  def_tag do
+  def_markup do
     key "each" do
       is_invalid unless value?(A_Data_ID)
       move_to "in"
@@ -31,6 +31,6 @@ module Mu_Html
       is_invalid unless value.is_a?(Array(JSON::Type))
       to_tags
     end
-  end # === def_tag
+  end # === def_markup
 
 end # === module Mu_Html

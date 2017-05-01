@@ -1,7 +1,7 @@
 
 module Mu_Html
 
-  def_tag do
+  def_markup do
 
     key "div" do
       move_to "body" if value?(A_Non_Empty_String)
@@ -22,7 +22,7 @@ module Mu_Html
       to_tags if value.is_a?(Array)
     end
 
-  end # === def_tag
+  end # === def_markup
 
 end # === module Mu_Html
 
