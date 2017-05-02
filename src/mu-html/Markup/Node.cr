@@ -31,7 +31,7 @@ module Mu_Html
         to_html_tag
       end # === def initialize
 
-      def about
+      def node
         @tag
       end
 

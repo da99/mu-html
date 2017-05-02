@@ -3,6 +3,7 @@
 spec () {
   source "$THIS_DIR/dev/paths.sh"
   SPEC_TMP="$THIS_DIR/tmp/spec/run"
+  PATH="$PATH:$THIS_DIR/../sh_color/bin/sh_color"
 
   case "$1" in
     dirs-must-match)
@@ -18,7 +19,7 @@ spec () {
           echo "!!! File in input, but not in output: $FILE" >&2
           exit 2
         fi
-        if ! diff "$input/$FILE" "$FILE" ; then
+        if ! diff --ignore-trailing-space "$input/$FILE" "$FILE" ; then
           echo "!!! File input != output: $FILE"
           exit 2
         fi
@@ -32,6 +33,8 @@ spec () {
           exit 2
         fi
       done
+
+      sh_color GREEN "=== {{Passed}}: BOLD{{$input}}"
       ;;
 
     bin-path)

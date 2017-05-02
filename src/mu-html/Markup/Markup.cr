@@ -32,10 +32,6 @@ module Mu_Html
     def self.clean(data : Hash(String, JSON::Type))
       return nil unless data.has_key?("markup")
 
-      raise Exception.new("markup.meta already defined.") if data.has_key?("markup.meta")
-      data["markup.meta"] = {
-      } of String => JSON::Type
-
       raw = to_array(data)
 
       case raw
@@ -59,6 +55,29 @@ module Mu_Html
       end # === case
 
       nil
+    end
+
+    def self.in_head_tag?(h : Hash(String, JSON::Type))
+      h["in-head-tag"]? == true
+    end
+
+    def self.includes_head_tags?(h : Hash(String, JSON::Type))
+      return true if in_head_tag?(h) 
+      return true if h["markup"]? && includes_head_tags?(h["markup"]?)
+      false
+    end
+
+    def self.includes_head_tags?(tags : Array(JSON::Type))
+      return true if tags.any? { |u| in_head_tag?(u) }
+      false
+    end
+
+    def self.in_head_tag?(u)
+      false
+    end
+
+    def self.includes_head_tags?(u)
+      false
     end
 
     def self.to_html(origin : Hash(String, JSON::Type))

@@ -3,13 +3,13 @@ module Mu_Html
 
   def_html do
     io << "{{#"
-    io << about["in"]
+    io << node["in"]
     io << "}}"
 
     string_or_tags
 
     io << "{{/"
-    io << about["in"]
+    io << node["in"]
     io << "}}"
   end # === def_html
 

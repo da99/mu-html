@@ -2,26 +2,32 @@
 
 module Mu_Html
   module Markup
-
     struct Fragment
 
-      IGNORED_TAGS = {"page-title", "meta"}
       getter io
       getter parent
 
+      def initialize(@io : IO::Memory, @parent : Page, @tags : Array(JSON::Type))
+        render
+      end # === def initialize
+
       def initialize(@io : IO::Memory, @parent : Page)
         @tags     = Markup.to_array(parent.origin)
+        render
+      end # === def initialize
+
+      def render
         this_fragment = self
         @tags.each { |t|
           case t
           when Hash(String, JSON::Type)
-            next if IGNORED_TAGS.includes?(t["tag"]?)
+            next if t["head-tag"]?
             Node.new(@io, t, this_fragment)
           else
             raise Exception.new("Invalid tag: #{t.inspect}")
           end
         }
-      end # === def initialize
+      end # === def render
 
       def to_s
         @io.to_s

@@ -49,20 +49,13 @@ module Mu_Html
         tag.has_key?(key)
       end
 
-      def page_title!
-        v = value
-        case v
-        when String
-          h = parent.origin["markup.meta"]
-          case h
-          when Hash
-            h["title"] = v
-          else
-            raise Exception.new("Unable to set title: markup.meta not defined properly.")
-          end
-        else
-          raise Exception.new("Invalid value for page title: #{value.inspect}")
-        end
+      def in_head_tag!
+        @tag["in-head-tag"] = true
+      end
+
+      def change_tag_to(s : String)
+        @parent.keys << "tag"
+        @tag["tag"] = s
       end
 
       def move_to(to : String)

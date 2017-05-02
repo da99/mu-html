@@ -13,12 +13,13 @@ module Mu_Html
       getter origin   : Hash(String, JSON::Type)
       getter tag      : Hash(String, JSON::Type)
       getter tag_name : String
+      getter keys     : Array(String)
 
       def initialize(@origin, @tag)
-        @keys = [] of String
+        @keys = ["in-head-tag"] of String
         @tag_name = "unknown"
         clean_tag!
-        @tag["tag"] = @tag_name
+        @tag["tag"] = @tag_name unless @tag.has_key?("tag")
       end # === def initialize
 
       private def clean_tag!
