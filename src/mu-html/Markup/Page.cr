@@ -3,11 +3,11 @@ module Mu_Html
   module Markup
     struct Page
 
-      getter io
-      getter origin
+      getter io      : IO::Memory
+      getter origin  : Hash(String, JSON::Type)
       getter is_page : Bool
 
-      def initialize(@origin : Hash(String, JSON::Type))
+      def initialize(@origin)
         @io = IO::Memory.new
         @is_page = Markup.includes_head_tags?(@origin)
 

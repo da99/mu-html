@@ -4,14 +4,16 @@ module Mu_Html
   module Markup
     struct Fragment
 
-      getter io
-      getter parent
+      getter io     : IO::Memory
+      getter parent : Page
+      getter tags   : Array(JSON::Type)
 
-      def initialize(@io : IO::Memory, @parent : Page, @tags : Array(JSON::Type))
+
+      def initialize(@io, @parent, @tags)
         render
       end # === def initialize
 
-      def initialize(@io : IO::Memory, @parent : Page)
+      def initialize(@io, @parent)
         @tags     = Markup.to_array(parent.origin)
         render
       end # === def initialize

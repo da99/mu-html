@@ -85,7 +85,7 @@ module Mu_Html
         v = @tag[k]
         case v
         when String
-          @io << v
+          @io << Markup.get_data(@parent.parent.origin, v)
         when Array(Hash(String, JSON::Type)), Array(JSON::Type)
           v.each { |r|
             case r

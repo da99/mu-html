@@ -2,15 +2,14 @@
 {
 
   "meta" : {
-    "title" : "Hello, Page",
-    "layout" : "full"
   },
 
   "data" : {
     "copyright": "(c) 2001",
     "msg1": "Hello 1",
     "msg2": "Hello 2",
-    "names": ["Dana", "Jon", "Phil"]
+    "names": ["Phil", "Jon", "Dana"],
+    "TITLE": "Hello, Test 00"
   },
 
   "style" : {
@@ -26,12 +25,13 @@
   },
 
   "markup" : [
-    {"page-title": "Hello, Test 00"},
-    {"p": null, "body": "main.msg1"},
-    {"p": "main.msg2"},
+    {"page-title": "TITLE"},
+    {"p": null, "body": "msg1"},
+    {"p": "msg2"},
     {"div": null, "class":"column", "body": [
       {"span": "msg1"},
-      {"span": "msg2"}
+      {"span": "msg2"},
+      {"span": "my.var"}
     ]},
     {"each" : "names", "as": "name", "body": [
       {"p": "name"}

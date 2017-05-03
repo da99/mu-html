@@ -23,6 +23,8 @@ require "./SPAN"
 module Mu_Html
   module Markup
 
+    DATA_ID_INVALID = /[^a-zA-Z\.\_\-0-9]+/
+
     REGEX = {
       id:      /^[a-z0-9\_]+$/,
       class:   /^[a-z0-9\-\_\ ]+$/,
@@ -55,7 +57,42 @@ module Mu_Html
       end # === case
 
       nil
-    end
+    end # === def self.clean
+
+    def self.get_data(data : Hash(String, JSON::Type))
+      v = data["data"]?
+      case v
+      when Hash(String, JSON::Type)
+        :ignore
+      else
+        raise Exception.new("Data section not found. Keys: #{data.keys}")
+      end
+
+      v
+    end # === def self.get_data
+
+    def self.get_data(data : Hash(String, JSON::Type), key : String )
+      keys = key.strip.split(".")
+      get_data(get_data(data), 0, keys)
+    end # === def self.get_data
+
+    def self.get_data(data : Hash(String, JSON::Type), i : Int32, keys : Array(String))
+      if i >= keys.size || !data.has_key?(keys[i])
+        return to_template_var(keys)
+      end
+      get_data(data[keys[i]], i+1, keys)
+    end # === def self.get_data
+
+    def self.to_template_var(keys : Array(String))
+      "{{" + keys.join(".").gsub(DATA_ID_INVALID, "") + "}}"
+    end # === def self.to_template_var
+
+    def self.get_data(data : String | Int64, i : Int32, keys : Array(String))
+      HTML.escape(data.to_s)
+    end # === def self.get_data
+
+    def self.get_data(u1, u2, keys : Array(String))
+    end # === def self.get_data
 
     def self.in_head_tag?(h : Hash(String, JSON::Type))
       h["in-head-tag"]? == true
