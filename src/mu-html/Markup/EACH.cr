@@ -3,17 +3,20 @@ module Mu_Html
 
   def_html do
     io << "{{#"
-    io << node["in"]
+    io << escape(node["in"])
     io << "}}"
 
     string_or_tags
 
     io << "{{/"
-    io << node["in"]
+    io << escape(node["in"])
     io << "}}"
   end # === def_html
 
+  VALID_EACH_AS = /^[a-zA-Z0-9\_\-]{1,20}$/
+  VALID_EACH_IN = /^[a-zA-Z0-9\_\.\-]{1,20}$/
   def_markup do
+
     key "each" do
       is_invalid unless value?(A_Data_ID)
       move_to "in"
@@ -21,10 +24,12 @@ module Mu_Html
 
     key "as" do
       is_invalid unless value?(A_Non_Empty_String)
+      is_invalid unless matches?(VALID_EACH_AS)
     end
 
     key "in" do
       is_invalid unless value?(A_Non_Empty_String)
+      is_invalid unless matches?(VALID_EACH_IN)
     end
 
     key "body" do

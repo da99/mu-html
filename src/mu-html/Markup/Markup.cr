@@ -59,6 +59,29 @@ module Mu_Html
       nil
     end # === def self.clean
 
+    def self.escape(s : String)
+      new_s = unescape(s)
+      HTML.escape(new_s)
+    end # === def self.escape
+
+    def self.escape(u)
+      escape(u.to_s)
+    end # === def self.escape
+
+    def self.unescape(s : String)
+      old_s = ""
+      new_s = s
+      while old_s != new_s
+        old_s = new_s
+        new_s = HTML.unescape(new_s)
+      end
+      new_s
+    end
+
+    def self.unescape(u)
+      unescape(u.to_s)
+    end
+
     def self.get_data(data : Hash(String, JSON::Type))
       v = data["data"]?
       case v

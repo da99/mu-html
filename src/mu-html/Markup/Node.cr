@@ -49,6 +49,14 @@ module Mu_Html
         @io
       end
 
+      def escape(v : String | Int32 | Int64)
+        Markup.escape(v)
+      end
+
+      def escape(u)
+        raise Exception.new("Invalid value for rendering: #{u.inspect}")
+      end
+
       def to_attrs(*keys)
         str = IO::Memory.new
         @tag.select { |k| keys.includes?(k) }.each do |k, v|
