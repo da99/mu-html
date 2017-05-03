@@ -72,6 +72,9 @@ module Mu_Html
     end # === def self.get_data
 
     def self.get_data(data : Hash(String, JSON::Type), key : String )
+      if key =~ DATA_ID_INVALID
+        raise Exception.new("Invalid data key: #{key}")
+      end
       keys = key.strip.split(".")
       get_data(get_data(data), 0, keys)
     end # === def self.get_data
@@ -84,7 +87,8 @@ module Mu_Html
     end # === def self.get_data
 
     def self.to_template_var(keys : Array(String))
-      "{{" + keys.join(".").gsub(DATA_ID_INVALID, "") + "}}"
+      "{{" + keys.join(".") + "}}"
+      "{{" + keys.join(".") + "}}"
     end # === def self.to_template_var
 
     def self.get_data(data : String | Int64, i : Int32, keys : Array(String))
