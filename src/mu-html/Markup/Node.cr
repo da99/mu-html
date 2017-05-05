@@ -35,6 +35,21 @@ module Mu_Html
         @tag
       end
 
+      def origin
+        parent.parent.origin
+      end
+
+      def data
+        v = origin["data"]
+        case v
+        when Hash(String, JSON::Type)
+          :ignore
+        else
+          {} of String => JSON::Type
+        end
+        v
+      end # === def data
+
       def tag(*attrs)
         @io << "<"
         @io << tag_name
@@ -93,7 +108,7 @@ module Mu_Html
         v = @tag[k]
         case v
         when String
-          @io << Markup.get_data(@parent.parent.origin, v)
+          @io << Data.get(data, v)
         when Array(Hash(String, JSON::Type)), Array(JSON::Type)
           v.each { |r|
             case r

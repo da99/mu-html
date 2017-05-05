@@ -8,7 +8,9 @@
     "msg1": "Hello 1",
     "msg2": "Hello 2",
     "names": ["Phil", "Jon", "Dana"],
-    "TITLE": "Hello, Test 00"
+    "my_var" : "my var",
+    "TITLE": "Hello, Test 00",
+    "copyright": "(c)"
   },
 
   "style" : {
@@ -30,7 +32,7 @@
     {"div": null, "class":"column", "body": [
       {"span": "msg1"},
       {"span": "msg2"},
-      {"span": "my.var"}
+      {"span": "my_var"}
     ]},
     {"each" : "names", "as": "name", "body": [
       {"p": "name"}

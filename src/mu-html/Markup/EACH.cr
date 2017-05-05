@@ -2,15 +2,13 @@
 module Mu_Html
 
   def_html do
-    io << "{{#"
-    io << escape(node["in"])
-    io << "}}"
 
-    string_or_tags
+    Data.get_each(data, node["in"]).each do |v|
+      Data.new_key(data, node["as"], v)
+      string_or_tags
+      Data.delete(data, node["as"])
+    end
 
-    io << "{{/"
-    io << escape(node["in"])
-    io << "}}"
   end # === def_html
 
   VALID_EACH_AS = /^[a-zA-Z0-9\_\-]{1,20}$/

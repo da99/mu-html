@@ -18,6 +18,12 @@ module Mu_Html
     "style"
   }
 
+  def self.clean(h : JSON::Type)
+    unescape every string
+    run each string through crystal-mustache
+    escape { and }
+  end # === def self.clean
+
   def parse(path : String)
     source = read_file(path)
     raise Exception.new("Empty file.") unless source
