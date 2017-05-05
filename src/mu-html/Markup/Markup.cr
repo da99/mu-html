@@ -18,6 +18,7 @@ require "./EACH"
 require "./FOOTER"
 require "./INPUT"
 require "./SPAN"
+require "./IF"
 # =============================
 
 module Mu_Html

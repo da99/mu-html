@@ -1,6 +1,7 @@
 
 # === {{CMD}}
 watch () {
+  PATH="$PATH:$THIS_DIR/../sh_color/bin"
   source "$THIS_DIR/dev/paths.sh"
 
   if [[ ! -z "$@" ]]; then
@@ -8,11 +9,13 @@ watch () {
     bin/mu-html spec compile
     sleep 0.5
     OUTPUT_DIR="$THIS_DIR/tmp/spec/output"
-    mkdir -p "$OUTPUT_DIR"
 
     SPEC_BIN_PATH="$(bin/mu-html spec bin-path)"
     IFS=$'\n'
-    for SPEC_DIR in $(find -L "spec" -mindepth 1 -maxdepth 1 -type d ); do
+    for SPEC_DIR in $(find -L "spec" -mindepth 1 -maxdepth 1 -type d | sort --human-numeric-sort); do
+      sh_color YELLOW "=== Running: {{$SPEC_DIR}}"
+      rm    -rf "$OUTPUT_DIR"
+      mkdir -p "$OUTPUT_DIR"
       "$SPEC_BIN_PATH" --output "$OUTPUT_DIR" --file "$SPEC_DIR"/input/input.json
       bin/mu-html spec dirs-must-match "$SPEC_DIR"/output "$OUTPUT_DIR"
     done

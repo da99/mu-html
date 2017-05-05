@@ -6,7 +6,7 @@ module Mu_Html
     COMMON_VALUE = /[\!a-z0-9\-\_\ ]+/
 
     def self.to_css(json : Hash(String, JSON::Type))
-      style = json["style"]
+      style = json["style"]?
       return nil unless style
       case style
       when Hash(String, JSON::Type)

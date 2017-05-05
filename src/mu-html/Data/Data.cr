@@ -62,6 +62,10 @@ module Mu_Html
       h
     end # === def self.clean_value
 
+    def self.clean_value(u : Bool)
+      u
+    end
+
     def self.clean_value(u)
       raise Exception.new("Invalid value for data: #{u.inspect}")
       u

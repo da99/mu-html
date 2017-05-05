@@ -17,7 +17,7 @@ module Mu_Html
           @tag_name = v
         else
           @tag_name = "unknown"
-          raise Exception.new("tag name not found: #{@tag.keys}")
+          raise Exception.new("Can't render: #{@tag.inspect}")
         end
 
         {% for m in Node.methods.map(&.name).select { |x| x[0..7] == "to_html_" } %}

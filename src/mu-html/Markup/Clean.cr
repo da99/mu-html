@@ -32,6 +32,7 @@ module Mu_Html
             return
           end
         {% end %}
+        raise Exception.new("Unknown tag: #{@tag.inspect}")
       end # === def clean_tag!
 
       def markup
