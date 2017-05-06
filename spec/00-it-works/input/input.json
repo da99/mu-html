@@ -1,8 +1,6 @@
 
 {
 
-  "meta" : {
-  },
 
   "data" : {
     "msg1": "Hello 1",
@@ -26,19 +24,19 @@
   },
 
   "markup" : [
-    {"page-title": "TITLE"},
-    {"p": null, "body": "msg1"},
-    {"p": "msg2"},
-    {"div": null, "class":"column", "body": [
-      {"span": "msg1"},
-      {"span": "msg2"},
-      {"span": "my_var"}
-    ]},
-    {"each" : "names", "as": "name", "body": [
-      {"p": "name"}
-    ]},
-    {"footer": null, "body": "copyright"},
-    {"input": "msg2", "name": "my-hidden", "type": "hidden" }
+    ["page-title", "TITLE"],
+    ["p", "msg1"],
+    ["p", "msg2"],
+    ["div", {"class":"column"},
+      ["span", "msg1"],
+      ["span", "msg2"],
+      ["span", "my_var"]
+    ],
+    ["each", "names", {"as": "name"},
+      ["p", "name"]
+    ],
+    ["footer", "copyright"],
+    ["input", {"name": "my-hidden","type": "hidden", "value": "msg2"}]
   ]
 
 }
