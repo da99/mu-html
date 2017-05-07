@@ -11,14 +11,14 @@ require "./Node"
 
 
 # === Include the tags: =======
-require "./Page_Title"
-require "./P"
-require "./DIV"
-require "./EACH"
-require "./FOOTER"
-require "./INPUT"
-require "./SPAN"
-require "./IF"
+require "./tags/TITLE"
+require "./tags/P"
+require "./tags/DIV"
+require "./tags/EACH"
+require "./tags/FOOTER"
+require "./tags/INPUT"
+require "./tags/SPAN"
+require "./tags/IF"
 # =============================
 
 module Mu_Html

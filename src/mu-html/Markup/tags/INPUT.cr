@@ -5,17 +5,6 @@ module Mu_Html
   VALID_NAME                 = /[a-z0-9\_\-]+/
   VALID_VALUE                = /[a-z0-9\_\-\ ]+/
 
-  def_html do
-    if node["type"]? == "hidden"
-      io << "<input name="
-      io << node["name"].inspect
-      io << " type=\"hidden\""
-      io << " value="
-      io << node["value"].inspect
-      io << " >"
-    end
-  end
-
   def_markup do
     key "input" do
       is_invalid unless value?(A_Data_ID)
@@ -35,6 +24,9 @@ module Mu_Html
       is_invalid unless value?(A_Data_ID)
       is_invalid unless matches?(VALID_VALUE)
     end
-  end
+
+    render(:tag, :attrs)
+
+  end # === def_markup
 
 end # === module Mu_Html

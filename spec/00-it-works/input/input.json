@@ -32,7 +32,7 @@
       ["span", "msg2"],
       ["span", "my_var"]
     ],
-    ["each", "names", {"as": "name"},
+    ["each", {"in": "names", "as": "name"},
       ["p", "name"]
     ],
     ["footer", "copyright"],
