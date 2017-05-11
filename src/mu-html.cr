@@ -12,47 +12,49 @@ module Mu_Html
   extend self
 
   SECTIONS = {
-    "meta",
     "data",
     "markup",
     "style"
   }
 
-  def self.clean(h : JSON::Type)
-    unescape every string
-    run each string through crystal-mustache
-    escape { and }
-  end # === def self.clean
-
-  def parse(path : String)
-    source = read_file(path)
-    raise Exception.new("Empty file.") unless source
-    raise Exception.new("Invalid text encoding.") unless source.valid_encoding?
-
-    json = JSON.parse_raw(source)
-
-    case json
-    when Hash
-      Base.allowed_keys(SECTIONS, json)
-      Meta.clean(json)
-      Data.clean(json)
-      Markup.clean(json)
-      Style.clean(json)
-    else
-      raise Exception.new("A key/value data structure was not found.")
-    end # === case json
-
-    json
-  end # === def parse
-
   def read_file(path : String)
-    return nil if !path.valid_encoding?
-    return nil if !File.file?(path)
     content = File.read(path)
-    return nil if !content
-    return if !content.valid_encoding?
+    raise Exception.new("Empty file.") unless content
+    raise Exception.new("Invalid content encoding.") unless content.valid_encoding?
     content
   end # === def read_file
+
+  def parse(path : String)
+    source = if File.file?(path)
+               read_file(path)
+             else
+               path
+             end
+
+    parse(JSON.parse_raw source)
+  end # === def parse
+
+  def parse(json : Hash(String, JSON::Type))
+    json.each_key { |k|
+      raise Exception.new("Unknown key: #{k}") unless SECTIONS.includes?(k)
+    }
+
+    Data.clean(json)
+    Markup.clean(json)
+    Style.clean(json)
+    Script.clean(json)
+
+    content = {} of Symbol => String
+    Markup.to_s(json, content)
+    Style.to_s(json, content)
+    Script.to_s(json, content)
+
+    content
+  end # === def parse
+
+  def parse(u)
+    raise Exception.new("Invalid json: JSON must be an Object with keys and values..")
+  end
 
 end # === module Mu_Html
 

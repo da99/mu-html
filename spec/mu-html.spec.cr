@@ -21,19 +21,10 @@ def file
   OPTIONS["file"]
 end
 
-raise Exception.new("Not a directory: #{output_dir}") unless Dir.exists?(output_dir)
-raise Exception.new("Not a file: #{file}") unless File.file?(file)
-
-json = Mu_Html.parse(OPTIONS["file"])
-
-if !json
-  puts ("Parse error: invalid json")
-  Process.exit(2)
+def write_unless_empty(to : String, content : Hash, key : Symbol)
+  return unless content.has_key?(key)
+  write_unless_empty(to, content[key])
 end
-
-write_unless_empty("markup.html", Mu_Html::Markup.to_html(json))
-write_unless_empty("style.css", Mu_Html::Style.to_css(json))
-write_unless_empty("script.js", Mu_Html::Script.to_js(json))
 
 def write_unless_empty(to : String, content : Nil)
   return
@@ -45,4 +36,20 @@ def write_unless_empty(to : String, content : String)
   puts "=== Writing: #{new_path}"
   File.write(new_path, content)
 end # === def write_unless_empty
+
+# =============================================================================
+
+raise Exception.new("Not a directory: #{output_dir}") unless Dir.exists?(output_dir)
+raise Exception.new("Not a file: #{file}") unless File.file?(file)
+
+content = Mu_Html.parse(file)
+
+write_unless_empty("markup.html", content, :html)
+write_unless_empty("style.css",   content, :css)
+write_unless_empty("script.js",   content, :js)
+
+
+
+
+
 

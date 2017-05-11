@@ -16,7 +16,7 @@ module Mu_Html
       getter keys     : Array(String)
 
       def initialize(@origin, @tag)
-        @keys = ["in-head-tag"] of String
+        @keys = ["in-tag-head"] of String
         @tag_name = "unknown"
         clean_tag!
         @tag["tag"] = @tag_name unless @tag.has_key?("tag")

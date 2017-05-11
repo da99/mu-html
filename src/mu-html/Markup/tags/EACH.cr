@@ -7,13 +7,13 @@ module Mu_Html
   # ["each", {"in":"my_data", "as": "i"}, [][][]]
   def_markup do
 
-    attr "in" do
+    attr! "in" do
       is_invalid unless value?(A_Data_ID)
       is_invalid unless value?(A_Non_Empty_String)
       is_invalid unless matches?(VALID_EACH_IN)
     end # === validate_attr "each"
 
-    attr "as" do
+    attr! "as" do
       is_invalid unless value?(A_Non_Empty_String)
       is_invalid unless matches?(VALID_EACH_AS)
     end
@@ -21,8 +21,9 @@ module Mu_Html
     render do
 
       for_each(attrs["in"]) do |v|
-        temp(attrs["as"], v)
-        render_tail
+        temp(attrs["as"], v) do
+          render(:tail)
+        end
       end
 
     end # === render

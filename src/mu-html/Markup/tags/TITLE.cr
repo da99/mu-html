@@ -1,19 +1,16 @@
 
 module Mu_Html
 
-
-  def_markup("title") do
-
+  def_markup do
     in_tag_head!
 
-    head(0) do
-      strip
-      is_invalid unless value?(A_Non_Empty_String)
-      is_tail
+    tail! do
+      single_value!
+      is_invalid! unless A_Data_ID.==(value)
     end
 
     render(:tag) do
-      tail
+      render(:tail)
     end # === render
 
   end # === def_markup

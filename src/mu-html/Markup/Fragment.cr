@@ -7,13 +7,13 @@ module Mu_Html
       getter io     : IO::Memory
       getter parent : Page
       getter tags   : Array(JSON::Type)
+      getter parent_tag : String
 
-
-      def initialize(@io, @parent, @tags)
+      def initialize(@io, @parent, @parent_tag, @tags)
         render
       end # === def initialize
 
-      def initialize(@io, @parent)
+      def initialize(@io, @parent, @parent_tag)
         @tags     = Markup.to_array(parent.origin)
         render
       end # === def initialize
@@ -22,8 +22,7 @@ module Mu_Html
         this_fragment = self
         @tags.each { |t|
           case t
-          when Hash(String, JSON::Type)
-            next if t["head-tag"]?
+          when Array
             Node.new(@io, t, this_fragment)
           else
             raise Exception.new("Invalid tag: #{t.inspect}")

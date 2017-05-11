@@ -25,7 +25,7 @@ module Mu_Html
         when u
           true
         else
-          u == value?
+          u == v
         end
       end
 
@@ -49,8 +49,8 @@ module Mu_Html
         tag.has_key?(key)
       end
 
-      def in_head_tag!
-        @tag["in-head-tag"] = true
+      def in_tag_head!
+        @tag["in-tag-head"] = true
       end
 
       def change_tag_to(s : String)

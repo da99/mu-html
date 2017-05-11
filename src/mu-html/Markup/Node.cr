@@ -4,13 +4,17 @@ module Mu_Html
 
     struct Node
 
+      include Clean_Tags
+
       getter parent   : Fragment
-      getter tag      : Hash(String, JSON::Type)
+      getter tag      : Array(JSON::Type)
       getter io       : IO::Memory
       getter tag_name : String
+      getter index    : Int32
 
       def initialize( @io, @tag, @parent )
-        v = @tag["tag"]?
+        v = @tag.first
+        @index = 1
 
         case v
         when String
@@ -20,19 +24,23 @@ module Mu_Html
           raise Exception.new("Can't render: #{@tag.inspect}")
         end
 
-        {% for m in Node.methods.map(&.name).select { |x| x[0..7] == "to_html_" } %}
-          {% meth = m[8..-1].downcase %}
+        {% for m in Clean_Tags.methods.map(&.name).select { |x| x[0..6] == "tag_of_" } %}
+          {% meth = m[7..-1].downcase %}
           if tag_name == {{meth.stringify}}
-            to_html_{{meth.id}}
+            tag_of_{{meth.id}}
             return
           end
         {% end %}
 
-        to_html_tag
+        raise Exception.new("Unknown tag: #{@tag_name}")
       end # === def initialize
 
-      def node
-        @tag
+      def in_head?
+        parent.parent_tag == "head"
+      end
+
+      def in_body?
+        parent.parent_tag == "body"
       end
 
       def origin
@@ -102,6 +110,46 @@ module Mu_Html
       def string_or_tags
         string_or_tags("body")
       end
+
+      def head?
+        @tag[@index]
+      end # === def head?
+
+      def head?(target)
+        v = head?
+        case v
+        when target
+          true
+        else
+          target == v
+        end
+      end # === def head?
+
+      def is_tail?
+        @index == (@tag.size - 1)
+      end
+
+      def is_tail!
+        raise Exception.new("Markup entry has too many values: #{@tag}") unless is_tail?
+      end # === def is_tail!
+
+      def is_invalid!
+        raise Exception.new("Invalid tag: #{@tag}")
+      end # === def is_invalid!
+
+      def tail!
+        Tail.new(self)
+      end # === def tail!
+
+      def tail!
+        t = tail!
+        with t yield
+      end # === def tail!
+
+      def render(*args)
+        r = Render.new(self, args)
+        with r yield
+      end # === def render
 
       def string_or_tags(k : String)
         return unless @tag.has_key?(k)

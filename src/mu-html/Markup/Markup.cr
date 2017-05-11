@@ -8,6 +8,8 @@ require "./Key"
 require "./Page"
 require "./Fragment"
 require "./Node"
+require "./Tail"
+require "./Render"
 
 
 # === Include the tags: =======
@@ -33,31 +35,15 @@ module Mu_Html
     }
 
     def self.clean(data : Hash(String, JSON::Type))
-      return nil unless data.has_key?("markup")
-
-      raw = to_array(data)
-
+      raw = data["markup"]?
       case raw
-
       when Array(JSON::Type)
-        raw.each { | raw_tag |
-          case raw_tag
-          when Hash(String, JSON::Type)
-            Clean.new(data, raw_tag)
-          else
-            raise Exception.new("Invalid value: #{raw_tag}")
-          end
-        }
-
+        true
       when Nil
-        raise Exception.new("Invalid markup.")
-
+        true
       else
-        raise Exception.new("Markup can only be an Array of tags.")
-
+        raise Exception.new("Invalid value for markup: #{raw.inspect}")
       end # === case
-
-      nil
     end # === def self.clean
 
     def self.to_template_var(keys : Array(String))
@@ -65,28 +51,11 @@ module Mu_Html
       "{{" + keys.join(".") + "}}"
     end # === def self.to_template_var
 
-    def self.in_head_tag?(h : Hash(String, JSON::Type))
-      h["in-head-tag"]? == true
-    end
-
-    def self.includes_head_tags?(h : Hash(String, JSON::Type))
-      return true if in_head_tag?(h) 
-      return true if h["markup"]? && includes_head_tags?(h["markup"]?)
-      false
-    end
-
-    def self.includes_head_tags?(tags : Array(JSON::Type))
-      return true if tags.any? { |u| in_head_tag?(u) }
-      false
-    end
-
-    def self.in_head_tag?(u)
-      false
-    end
-
-    def self.includes_head_tags?(u)
-      false
-    end
+    def self.to_s(origin : Hash(String, JSON::Type), target : Hash(Symbol, String))
+      return "" unless origin["markup"]?
+      target[:html] = to_html(origin)
+      target
+    end # === def self.to_s
 
     def self.to_html(origin : Hash(String, JSON::Type))
       Page.new(origin).to_s

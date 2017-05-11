@@ -3,10 +3,13 @@ module Mu_Html
 
   def_markup do
 
-    tail { required }
+    attr? "id"
+    attr? "class"
+
+    tail!
 
     render(:tag, :attrs) do
-      tail
+      render(:tail)
     end
 
   end # === def_markup

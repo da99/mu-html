@@ -1,7 +1,6 @@
 
 {
 
-
   "data" : {
     "msg1": "Hello 1",
     "msg2": "Hello 2",
@@ -24,7 +23,7 @@
   },
 
   "markup" : [
-    ["page-title", "TITLE"],
+    ["title", "TITLE"],
     ["p", "msg1"],
     ["p", "msg2"],
     ["div", {"class":"column"},

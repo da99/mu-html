@@ -11,7 +11,7 @@
   },
 
   "markup": [
-    ["page-title", "TITLE"],
+    ["title", "TITLE"],
     ["if?", "is_false",
       ["p", "msg1"]
     ],

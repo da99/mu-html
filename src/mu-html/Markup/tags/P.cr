@@ -3,10 +3,10 @@ module Mu_Html
 
   def_markup do
 
-    tail { required }
+    tail!
 
     render(:tag, :attrs) do
-      tail
+      render(:tail)
     end
 
   end # === def_markup

@@ -6,21 +6,17 @@ module Mu_Html
   VALID_VALUE                = /[a-z0-9\_\-\ ]+/
 
   def_markup do
-    key "input" do
-      is_invalid unless value?(A_Data_ID)
-      move_to "value"
-    end
 
-    key "name" do
+    attr! "name" do
       is_invalid unless value?(A_Non_Empty_String)
       is_invalid unless matches?(VALID_NAME)
     end
 
-    key "type" do
+    attr! "type" do
       is_invalid unless TAG_OF_INPUT_ALLOWED_TYPES.includes?(value)
     end
 
-    key "value" do
+    attr! "value" do
       is_invalid unless value?(A_Data_ID)
       is_invalid unless matches?(VALID_VALUE)
     end

@@ -5,6 +5,13 @@ module Mu_Html
     COMMON_ID = /[\#\.a-z0-9\-\_]+/
     COMMON_VALUE = /[\!a-z0-9\-\_\ ]+/
 
+    def self.to_s(json : Hash(String, JSON::Type), target : Hash(Symbol, String))
+      content = to_css(json)
+      return "" unless content
+      target[:css] = content
+      target
+    end # === def self.to_s
+
     def self.to_css(json : Hash(String, JSON::Type))
       style = json["style"]?
       return nil unless style
@@ -22,7 +29,9 @@ module Mu_Html
       case raw
       when Hash(String, JSON::Type)
         raw.each { |k, v|
-          raise Exception.new("Invalid value: #{k}, #{v}") unless clean?(k,v)
+          unless clean?(k,v)
+            raise Exception.new("Invalid value: #{k}, #{v}")
+          end
         }
       end
       json

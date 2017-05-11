@@ -3,8 +3,11 @@ module Mu_Html
 
   def_markup do
 
+    attr? "id"
+    attr? "class"
+
     render(:tag, :attrs) do
-      tail
+      render(:tail)
     end
 
   end # === def_markup

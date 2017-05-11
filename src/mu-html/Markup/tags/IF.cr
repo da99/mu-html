@@ -3,19 +3,16 @@ module Mu_Html
 
   def_markup("if?") do
 
-    head(0) do
+    head! do
       is_invalid unless value?.is_a?(String)
-      attr("if_data")
     end # === validate_attr "each"
 
-    tail do
+    tail! do
       is_invalid unless size > 1
     end
 
     render do
-      if get(attr("if_data"))
-        tail
-      end
+      render(:tail) if get(head)
     end
 
   end # === def_markup

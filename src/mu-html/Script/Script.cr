@@ -2,8 +2,12 @@
 module Mu_Html
   module Script
 
-    def self.to_js(json : Hash(String, JSON::Type))
-      ""
+    def self.clean(json : Hash(String, JSON::Type))
+      return json
+    end
+
+    def self.to_s(json : Hash(String, JSON::Type), content : Hash(Symbol, String))
+      return content
     end # === def self.to_js
 
   end # === module Script

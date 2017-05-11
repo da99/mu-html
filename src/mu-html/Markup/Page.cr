@@ -9,10 +9,10 @@ module Mu_Html
 
       def initialize(@origin)
         @io = IO::Memory.new
-        @is_page = Markup.includes_head_tags?(@origin)
+        @is_page = true
 
         page_head
-        Fragment.new(@io, self, Markup.to_array(@origin).select { |t| !Markup.in_head_tag?(t) })
+        Fragment.new(@io, self, "body", Markup.to_array(@origin))
         page_bottom
       end # === def initialize
 
@@ -26,9 +26,8 @@ module Mu_Html
         Fragment.new(
           @io,
           self,
-          Markup.to_array(@origin).select { |t|
-            Markup.in_head_tag?(t)
-          }
+          "head",
+          Markup.to_array(@origin)
         )
         @io << "\n  </head>\n"
         @io << "  <body>\n"
