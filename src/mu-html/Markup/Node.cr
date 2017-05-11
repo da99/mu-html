@@ -11,8 +11,10 @@ module Mu_Html
       getter io       : IO::Memory
       getter tag_name : String
       getter index    : Int32
+      getter attrs    : Hash(String, JSON::Type)
 
       def initialize( @io, @tag, @parent )
+        @temp = {} of String => JSON::Type
         v = @tag.first
         @index = 1
 
@@ -22,6 +24,15 @@ module Mu_Html
         else
           @tag_name = "unknown"
           raise Exception.new("Can't render: #{@tag.inspect}")
+        end
+
+        raw_attrs = @tag[@index]
+        case raw_attrs
+        when Hash(String, JSON::Type)
+          @attrs = raw_attrs
+          @index = @index + 1
+        else
+          @attrs = {} of String => JSON::Type
         end
 
         {% for m in Clean_Tags.methods.map(&.name).select { |x| x[0..6] == "tag_of_" } %}
@@ -45,6 +56,10 @@ module Mu_Html
 
       def origin
         parent.parent.origin
+      end
+
+      def data(name : Symbol)
+        @temp[name]
       end
 
       def data
@@ -137,8 +152,13 @@ module Mu_Html
         raise Exception.new("Invalid tag: #{@tag}")
       end # === def is_invalid!
 
+      def shift!(name : Symbol)
+        s = Position.new(:shift!, self)
+        with s yield
+      end # === def head!
+
       def tail!
-        Tail.new(self)
+        Position.new(:tail, self)
       end # === def tail!
 
       def tail!
@@ -146,10 +166,15 @@ module Mu_Html
         with t yield
       end # === def tail!
 
-      def render(*args)
-        r = Render.new(self, args)
+      def render(*options)
+        r = Render.new(self, *options)
+        self
+      end
+
+      def render(*options)
+        r = Render.new(self, *options)
         with r yield
-      end # === def render
+      end
 
       def string_or_tags(k : String)
         return unless @tag.has_key?(k)
@@ -170,6 +195,35 @@ module Mu_Html
           raise Exception.new("Invalid value for content: #{v} (#{v.class})")
         end
       end # === def self.string_or_tags
+
+      def attr!(name : String)
+        attr = Attr.new(name, self)
+        attr.required!
+        with attr yield
+        self
+      end
+
+      def attr?(name : String)
+        return unless attrs.has_key?(name)
+        case name
+        when "id"
+          attr = Attr.new(name, self)
+          attr.is_invalid unless attr.id?
+        when "class"
+          attr = Attr.new(name, self)
+          attr.is_invalid unless attr.class?
+        else
+          raise Exception.new("Unable to validate attribute: #{name}")
+        end
+        self
+      end
+
+      def attr?(name : String)
+        return self unless @attrs.has_key?(name)
+        attr = Attr.new(name, self)
+        with attr yield
+        self
+      end # === def attr?
 
       def to_html_tag
         tag("id", "class") do

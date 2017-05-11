@@ -1,12 +1,12 @@
 
 module Mu_Html
   module Markup
-    struct Tail
-
+    struct Position
       getter parent : Node
+      getter name   : Symbol
 
-      def initialize(@parent)
-        raise Exception.new("Tail is required for tag: #{parent.tag}") if empty?
+      def initialize(@name, @parent)
+        raise Exception.new("Head is required for tag: #{parent.tag}") if empty?
       end # === def initialize
 
       def index
@@ -38,6 +38,14 @@ module Mu_Html
         @parent.tag[index..last_index]
       end
 
-    end # === struct
+      def is_invalid!
+        raise Exception.new("Value is invalid for: #{parent.tag_name}: #{value?}")
+      end # === def is_invalid!
+
+      def value?
+        @parent.tag[index]?
+      end # === def value?
+
+    end # === struct Head
   end # === module Markup
 end # === module Mu_Html

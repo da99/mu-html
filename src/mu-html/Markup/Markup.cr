@@ -8,7 +8,8 @@ require "./Key"
 require "./Page"
 require "./Fragment"
 require "./Node"
-require "./Tail"
+require "./Attr"
+require "./Position"
 require "./Render"
 
 
@@ -31,7 +32,7 @@ module Mu_Html
     REGEX = {
       id:      /^[a-z0-9\_]+$/,
       class:   /^[a-z0-9\-\_\ ]+$/,
-      data_id: /^[a-z0-9\_\.\-]+$/
+      data_id: /^[a-zA-Z0-9\_\.\-]+$/
     }
 
     def self.clean(data : Hash(String, JSON::Type))
