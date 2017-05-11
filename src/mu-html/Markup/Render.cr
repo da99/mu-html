@@ -6,85 +6,93 @@ module Mu_Html
       getter parent : Node
 
       def initialize(@parent)
-        render
-      end # === def initialize
-
-      def initialize(@parent, tag : Symbol)
-        @parent.io << tag.inspect
-        render
+        @opts = {:tag => false, :attrs => false} of Symbol => Bool
       end # === def initialize
 
       def initialize(@parent, tag : Symbol, attr : Symbol)
+        @opts = {:tag => false, :attrs => false} of Symbol => Bool
         @parent.io << [tag, attr].inspect
-        render
       end # === def initialize
 
       def io
         parent.io
       end
 
-      def tail
-        io << "tail!"
-      end
-
       def keys_should_be_known
-        io << "keys should be known\n"
+        io << " keys should be known "
       end # === def keys_should_be_known
 
-      def render
-        io << "render the node"
+      def render(o : Symbol)
+        case o
+        when :tail
+          start = parent.index
+          fin   = parent.tag.size - 1
+          while start <= fin
+            new_tag = parent.tag[start]
+            case new_tag
+            when Array(JSON::Type)
+              Node.new(io, new_tag, parent.parent_tag, parent.data)
+            when String
+              io << parent.data[new_tag]
+            else
+              raise Exception.new("Invalid tag: #{new_tag.inspect}")
+            end
+            start += 1
+          end
+          # io << "  the #{o.inspect} "
+        else
+          raise Exception.new("Unable to render: #{o.inspect}")
+        end
       end
 
-      def render(k : Symbol)
-        io << "render #{k}"
-      end # === def render
-
-      def render(names : Tuple(Symbol, Symbol))
-        case names
-        when {:tag, :attrs}
-          :ignore
-        else
-          raise Exception.new("Unable to render #{names} for tag: #{@parent.tag.inspect}")
+      def render_with(*options)
+        options.each do |name|
+          case name
+          when :tag, :attrs
+            @opts[name] = true
+          else
+            raise Exception.new("Invalid option for rendering: #{name.inspect}")
+          end
         end
+      end # === def render_with
 
+      def start_and_finish_render(*options)
+        render_with(*options) unless options.empty?
         io << "<"
-        io << @parent.tag_name
-        io << " attrs! " if names == {:tag, :attrs}
-        io << ">"
-
-        keys_should_be_known
-        io << "</"
-        io << @parent.tag_name
-        io << ">"
-      end # === def render
-
-      def render(names : Tuple(Symbol))
-        case names
-        when {:tag}
-          :ignore
-        else
-          raise Exception.new("Unable to render #{names} for tag: #{@parent.tag.inspect}")
+        if @opts[:tag]
+          io << parent.tag_name
         end
-
-        io << "<"
-        io << @parent.tag_name
+        if @opts[:attrs]
+          io << " attrs "
+          keys_should_be_known
+        end
         io << ">"
+      end
 
-        keys_should_be_known
-        io << "</"
-        io << @parent.tag_name
-        io << ">"
-      end # === def render
+      def start_render(*options)
+        render_with(*options) unless options.empty?
+        if @opts[:tag]
+          io << "<"
+          io << parent.tag_name
+          if @opts[:attrs]
+            io << " attrs "
+            keys_should_be_known
+          end
+          io << ">"
+        end
+      end
+
+      def finish_render
+        if @opts[:tag]
+          io << "</"
+          io << parent.tag_name
+          io << ">"
+        end
+      end
 
       def data
-        v = parent.parent.parent.origin["data"]
-        case v
-        when Hash
-          v
-        else
-          raise Exception.new("Data not found for page.")
-        end
-      end # === def data
+        parent.data
+      end
 
       def temp(name, v)
         if data.has_key?(name)

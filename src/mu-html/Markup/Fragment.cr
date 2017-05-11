@@ -5,25 +5,20 @@ module Mu_Html
     struct Fragment
 
       getter io     : IO::Memory
-      getter parent : Page
+      getter data   : Hash(String, JSON::Type)
       getter tags   : Array(JSON::Type)
       getter parent_tag : String
 
-      def initialize(@io, @parent, @parent_tag, @tags)
-        render
-      end # === def initialize
-
-      def initialize(@io, @parent, @parent_tag)
-        @tags     = Markup.to_array(parent.origin)
+      def initialize(@io, @data, @parent_tag, @tags)
         render
       end # === def initialize
 
       def render
-        this_fragment = self
+        me = self
         @tags.each { |t|
           case t
           when Array
-            Node.new(@io, t, this_fragment)
+            Node.new(@io, t, parent_tag, data)
           else
             raise Exception.new("Invalid tag: #{t.inspect}")
           end

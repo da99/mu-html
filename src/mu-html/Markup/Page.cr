@@ -6,13 +6,21 @@ module Mu_Html
       getter io      : IO::Memory
       getter origin  : Hash(String, JSON::Type)
       getter is_page : Bool
+      getter data    : Hash(String, JSON::Type)
 
       def initialize(@origin)
         @io = IO::Memory.new
         @is_page = true
 
+        data = origin["data"]
+        if !data.is_a?(Hash(String, JSON::Type))
+          raise Exception.new("Invalid data.")
+        end
+
+        @data = data
+
         page_head
-        Fragment.new(@io, self, "body", Markup.to_array(@origin))
+        Fragment.new(io, data, "body", Markup.to_array(@origin))
         page_bottom
       end # === def initialize
 
@@ -24,8 +32,8 @@ module Mu_Html
         @io << "  <head>\n"
         @io << "    <meta charset=\"utf-8\">\n    "
         Fragment.new(
-          @io,
-          self,
+          io,
+          data,
           "head",
           Markup.to_array(@origin)
         )

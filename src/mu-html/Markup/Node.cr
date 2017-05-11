@@ -6,14 +6,15 @@ module Mu_Html
 
       include Clean_Tags
 
-      getter parent   : Fragment
+      getter parent_tag : String
+      getter data     : Hash(String, JSON::Type)
       getter tag      : Array(JSON::Type)
       getter io       : IO::Memory
       getter tag_name : String
       getter index    : Int32
       getter attrs    : Hash(String, JSON::Type)
 
-      def initialize( @io, @tag, @parent )
+      def initialize( @io, @tag, @parent_tag, @data )
         @temp = {} of String => JSON::Type
         v = @tag.first
         @index = 1
@@ -47,31 +48,16 @@ module Mu_Html
       end # === def initialize
 
       def in_head?
-        parent.parent_tag == "head"
+        parent_tag == "head"
       end
 
       def in_body?
-        parent.parent_tag == "body"
-      end
-
-      def origin
-        parent.parent.origin
+        parent_tag == "body"
       end
 
       def data(name : Symbol)
         @temp[name]
       end
-
-      def data
-        v = origin["data"]
-        case v
-        when Hash(String, JSON::Type)
-          :ignore
-        else
-          {} of String => JSON::Type
-        end
-        v
-      end # === def data
 
       def tag(*attrs)
         @io << "<"
@@ -154,6 +140,7 @@ module Mu_Html
 
       def shift!(name : Symbol)
         s = Position.new(:shift!, self)
+        @index = @index + 1
         with s yield
       end # === def head!
 
@@ -167,34 +154,18 @@ module Mu_Html
       end # === def tail!
 
       def render(*options)
-        r = Render.new(self, *options)
+        r = Render.new(self)
+        r.start_and_finish_render(*options)
         self
       end
 
       def render(*options)
-        r = Render.new(self, *options)
+        r = Render.new(self)
+        r.start_render(*options)
         with r yield
+        r.finish_render
+        self
       end
-
-      def string_or_tags(k : String)
-        return unless @tag.has_key?(k)
-        v = @tag[k]
-        case v
-        when String
-          @io << Data.get(data, v)
-        when Array(Hash(String, JSON::Type)), Array(JSON::Type)
-          v.each { |r|
-            case r
-            when Hash(String, JSON::Type)
-              Node.new(@io, r, parent)
-            else
-              raise Exception.new("invalid value for inner HTML: #{v.inspect}")
-            end
-          }
-        else
-          raise Exception.new("Invalid value for content: #{v} (#{v.class})")
-        end
-      end # === def self.string_or_tags
 
       def attr!(name : String)
         attr = Attr.new(name, self)

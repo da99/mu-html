@@ -4,14 +4,12 @@ module Mu_Html
     struct Position
       getter parent : Node
       getter name   : Symbol
+      getter index  : Int32
 
       def initialize(@name, @parent)
+        @index = parent.index
         raise Exception.new("Head is required for tag: #{parent.tag}") if empty?
       end # === def initialize
-
-      def index
-        @parent.index
-      end
 
       def last_index
         @parent.tag.size - 1
