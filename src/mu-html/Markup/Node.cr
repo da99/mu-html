@@ -14,6 +14,19 @@ module Mu_Html
       getter index    : Int32
       getter attrs    : Hash(String, JSON::Type)
 
+      def self.many(arr : Array(JSON::Type), io : IO::Memory, parent_tag : String, data : Hash(String, JSON::Type))
+        arr.each { |v|
+          case v
+          when Array(JSON::Type)
+            next if parent_tag != "head" && Clean_Tags::HEAD_TAGS.includes?(v.first)
+            next if parent_tag == "head" && !Clean_Tags::HEAD_TAGS.includes?(v.first)
+            Node.new(io, v, parent_tag, data)
+          else
+            raise Exception.new("Invalid tag: #{v.inspect}")
+          end
+        }
+      end # === def self.many
+
       def initialize( @io, @tag, @parent_tag, @data )
         @temp = {} of String => JSON::Type
         v = @tag.first

@@ -1,0 +1,5 @@
+
+doctype: html5
+tidy-mark: false
+indent: auto
+markup: yes

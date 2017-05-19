@@ -1,18 +1,23 @@
 
 module Mu_Html
+  module Markup
+    module Tags
 
-  def_markup do
-    in_tag_head!
+      def head_of_title(meta, val : String)
+        is_invalid! unless A_Data_ID.==(val)
+        render(:tag, :tail)
+      end
 
-    tail! do
-      single_value!
-      is_invalid! unless A_Data_ID.==(value)
-    end
-
-    render(:tag) do
-      render(:tail)
-    end # === render
-
-  end # === def_markup
-
+    end # === module Tags
+  end # === module Markup
 end # === module Mu_Html
+
+  # def_markup do
+  #   in_tag_head!
+  #   tail! do
+  #     single_value!
+  #     is_invalid! unless A_Data_ID.==(value)
+  #   end
+  #   render(:tag, :tail)
+  # end # === def_markup
+

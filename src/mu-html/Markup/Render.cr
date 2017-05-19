@@ -4,13 +4,22 @@ module Mu_Html
     struct Render
 
       getter parent : Node
+      @opts : Hash(Symbol, Bool)
+
+      def default_hash
+        {
+          :tag => false,
+          :attrs => false,
+          :tail => false
+        } of Symbol => Bool
+      end
 
       def initialize(@parent)
-        @opts = {:tag => false, :attrs => false} of Symbol => Bool
+        @opts = default_hash
       end # === def initialize
 
       def initialize(@parent, tag : Symbol, attr : Symbol)
-        @opts = {:tag => false, :attrs => false} of Symbol => Bool
+        @opts = default_hash
         @parent.io << [tag, attr].inspect
       end # === def initialize
 
@@ -48,7 +57,7 @@ module Mu_Html
       def render_with(*options)
         options.each do |name|
           case name
-          when :tag, :attrs
+          when :tag, :attrs, :tail
             @opts[name] = true
           else
             raise Exception.new("Invalid option for rendering: #{name.inspect}")
@@ -66,7 +75,14 @@ module Mu_Html
           io << " attrs "
           keys_should_be_known
         end
-        io << ">"
+
+        if @opts[:tail]
+          io << ">"
+          render(:tail)
+          finish_render
+        else
+          io << ">"
+        end
       end
 
       def start_render(*options)

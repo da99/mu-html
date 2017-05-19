@@ -6,6 +6,18 @@ spec () {
   PATH="$PATH:$THIS_DIR/../sh_color/bin/sh_color"
 
   case "$1" in
+
+    bin-path)
+      echo "$SPEC_TMP"/mu-html.spec
+      ;;
+
+    compile)
+      mkdir -p "$SPEC_TMP"
+      cd "$SPEC_TMP"
+      crystal build "$THIS_DIR/spec/mu-html.spec.cr"
+      echo "=== Wrote: $SPEC_TMP/mu-html.spec"
+      ;;
+
     dirs-must-match)
       shift
       input="$(realpath "$1")"; shift
@@ -35,17 +47,6 @@ spec () {
       done
 
       sh_color GREEN "=== {{Passed}}: BOLD{{$input}}"
-      ;;
-
-    bin-path)
-      echo "$SPEC_TMP"/mu-html.spec
-      ;;
-
-    compile)
-      mkdir -p "$SPEC_TMP"
-      cd "$SPEC_TMP"
-      crystal build "$THIS_DIR/spec/mu-html.spec.cr"
-      echo "=== Wrote: $SPEC_TMP/mu-html.spec"
       ;;
 
     new)

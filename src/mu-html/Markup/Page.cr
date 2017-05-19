@@ -20,7 +20,7 @@ module Mu_Html
         @data = data
 
         page_head
-        Fragment.new(io, data, "body", Markup.to_array(@origin))
+        Node.many(Markup.to_array(@origin), io, "body", data)
         page_bottom
       end # === def initialize
 
@@ -31,11 +31,11 @@ module Mu_Html
         @io << "<html lang=\"en\">\n"
         @io << "  <head>\n"
         @io << "    <meta charset=\"utf-8\">\n    "
-        Fragment.new(
+        Node.many(
+          Markup.to_array(@origin),
           io,
-          data,
           "head",
-          Markup.to_array(@origin)
+          data
         )
         @io << "\n  </head>\n"
         @io << "  <body>\n"
