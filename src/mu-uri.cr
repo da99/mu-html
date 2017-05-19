@@ -4,6 +4,9 @@ require "html"
 
 module Mu_URI
 
+  VALID_FRAGMENT = /^[a-zA-Z0-9\_\-]+$/
+  BEGINNING_SLASH = /^\//
+
   extend self
 
   def unescape(raw : String)
@@ -16,11 +19,17 @@ module Mu_URI
     new_s
   end # === def unescape
 
+  def slash_for_relative_urls(u : URI)
+    if !u.scheme && u.path && u.path !~ BEGINNING_SLASH
+      return nil
+    end
+    u
+  end # === def slash_for_relative_urls
+
   def is_fragment_only?(u : URI)
     u.fragment && !u.host && !u.query && !u.path
   end
 
-  VALID_FRAGMENT = /^[a-zA-Z0-9\_\-]+$/
   def clean_fragment(s : String)
     s = s.strip
     return nil unless s =~ VALID_FRAGMENT
@@ -61,10 +70,14 @@ module Mu_URI
     u
   end
 
+  def normalize(n : Nil)
+    nil
+  end # === def normalize
+
   def normalize(u : URI)
     fin = u.normalize.to_s.strip
     return nil if fin == ""
-    fin
+    HTML.escape(fin)
   end # === def normalize
 
   def escape(raw : String)
@@ -84,6 +97,7 @@ module Mu_URI
     # URL was invalid to begin with. Return nil to be
     # safe.
     return nil if origin_scheme && !u.scheme
+    u = slash_for_relative_urls(u)
     normalize(u)
   end # === def escape
 

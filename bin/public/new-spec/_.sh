@@ -3,6 +3,10 @@
 new-spec () {
   cd "$THIS_DIR"
   local +x RAW="$(echo $@)" # squeeze whitespace
+  if [[ -z "$RAW" ]] ; then
+    echo "!!! Missing title" >&2
+    exit 2
+  fi
   local +x NAME="${RAW// /_}"
 
   local +x last="$(ls -1 specs/ | grep -P '^\d+' | sort | tail -n 1)"
@@ -17,7 +21,7 @@ new-spec () {
   fi
 
   mkdir "$DIR"
-  touch "$DIR"/input
 
-  echo "$DIR"/input
+  echo "$DIR"
+  ls -1 "$DIR"
 } # === end function
