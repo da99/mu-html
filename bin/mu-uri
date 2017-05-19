@@ -9,7 +9,8 @@ fi
 set -u -e -o pipefail
 THE_ARGS="$@"
 THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
-
+PATH="$PATH:$THIS_DIR/bin"
+PATH="$PATH:$THIS_DIR/../sh_color/bin"
 
 case $ACTION in
 
@@ -20,6 +21,7 @@ case $ACTION in
 
   *)
 
+    mkdir -p "$THIS_DIR/tmp"
     FUNC_FILE="$THIS_DIR/bin/public/${ACTION}/_.sh"
 
     if [[ -s  "$FUNC_FILE"  ]]; then

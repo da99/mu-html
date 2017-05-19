@@ -5,7 +5,7 @@ new-spec () {
   local +x RAW="$(echo $@)" # squeeze whitespace
   local +x NAME="${RAW// /_}"
 
-  local +x last="$(ls -1 specs/ | sort | tail -n 1)"
+  local +x last="$(ls -1 specs/ | grep -P '^\d+' | sort | tail -n 1)"
   local +x last_num=${last%%-*}
   local +x NEXT_NUM=$( printf "%03d" $(( last_num + 1)) )
 
