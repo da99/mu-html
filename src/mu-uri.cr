@@ -7,6 +7,7 @@ module Mu_URI
   VALID_FRAGMENT  = /^[a-zA-Z0-9\_\-]+$/
   BEGINNING_SLASH = /^\//
   CNTRL_CHARS     = /[[:cntrl:]]+/i
+  WHITE_SPACE     = /[\s[:cntrl:]]+/i
 
   extend self
 
@@ -75,9 +76,18 @@ module Mu_URI
     nil
   end # === def normalize
 
+  def is_empty?(n : Nil)
+    true
+  end # === def is_empty?
+
+  def is_empty?(s : String)
+    s.strip.empty?
+  end # === def is_empty?
+
   def normalize(u : URI)
     fin = u.normalize.to_s.strip
     return nil if fin == ""
+    return nil if is_empty?(u.host) && is_empty?(u.path) && is_empty?(u.fragment)
     HTML.escape(fin)
   end # === def normalize
 
@@ -85,6 +95,23 @@ module Mu_URI
     return nil if s =~ CNTRL_CHARS
     s
   end # === def clean_cntrl_chars
+
+  def clean_host(s : String)
+    return nil if s =~ WHITE_SPACE
+    return nil if s.empty?
+    s
+  end # === def clean_host
+
+  def clean_host(u : URI)
+    s = u.host
+    case s
+    when String
+      new_host = clean_host(s)
+      return nil unless new_host
+      u.host = new_host
+    end
+    return u
+  end # === def clean_host
 
   def escape(raw : String)
     raw = unescape(raw.strip)
@@ -95,7 +122,7 @@ module Mu_URI
 
     origin_scheme = u.scheme
 
-    {% for meth in "scheme fragment".split  %}
+    {% for meth in "scheme fragment host".split  %}
       if u
         u = clean_{{meth.id}}(u)
         return u unless u

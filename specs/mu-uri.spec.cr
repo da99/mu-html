@@ -68,3 +68,4 @@ if INPUTS.size == 1
 else
   puts "{{PASS}} (#{INPUTS.size} total): #{DIR}"
 end
+
