@@ -25,4 +25,5 @@ new-spec () {
   echo "$DIR"
   source "$THIS_DIR/bin/public/edit-spec/_.sh"
   edit-spec "$DIR"
+  edit-spec "$DIR"
 } # === end function

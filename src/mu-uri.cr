@@ -65,13 +65,20 @@ module Mu_URI
     nil
   end # === def clean_scheme
 
-  def clean_scheme(s : String)
+  def is_allowed_scheme?(s : String)
     case s
     when "http", "https", "ftp", "sftp"
-      s
-    else
-      nil
+      return true
     end
+    false
+  end
+
+  def clean_scheme(s : String)
+    return s if is_allowed_scheme?(s)
+
+    new_s = URI.unescape(s.downcase.strip)
+    return new_s if is_allowed_scheme?(new_s)
+    nil
   end
 
   def clean_scheme(u : URI)

@@ -39,7 +39,11 @@ EXPECT = case
 
          when File.exists?(DIR + "/multi-output")
            raw = read_file(DIR+"/multi-output")
-           raw.split("\n")
+           arr = raw.split("\n")
+           if INPUTS.size != arr.size
+             raise Exception.new("!!! #{INPUTS.size} (inputs) != #{arr.size} (outputs) ")
+           end
+           arr
 
          when File.exists?(DIR + "/output")
            # Check for /output last,
@@ -74,7 +78,6 @@ INPUTS.each_index do |i|
   puts "BOLD{{INPUT}}: #{input.inspect}"
   puts "#{actual.inspect} RED{{!=}} #{expect.inspect}"
   exit 1
-
 end # == INPUTS.each
 
 if INPUTS.size == 1
