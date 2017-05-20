@@ -13,7 +13,7 @@ new-spec () {
   local +x last_num=${last%%-*}
   local +x NEXT_NUM=$( printf "%03d" $(( last_num + 1)) )
 
-  local +x DIR=specs/"$NEXT_NUM-$NAME"
+  local +x DIR=specs/"${NEXT_NUM}-${NAME}"
 
   if [[ -e "$DIR" ]]; then
     echo "!!! Already exists: $DIR" >&2
@@ -23,5 +23,6 @@ new-spec () {
   mkdir "$DIR"
 
   echo "$DIR"
-  ls -1 "$DIR"
+  source "$THIS_DIR/bin/public/edit-spec/_.sh"
+  edit-spec "$DIR"
 } # === end function

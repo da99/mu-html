@@ -8,6 +8,9 @@ module Mu_URI
   BEGINNING_SLASH = /^\//
   CNTRL_CHARS     = /[[:cntrl:]]+/i
   WHITE_SPACE     = /[\s[:cntrl:]]+/i
+  FIND_A_DOT      = /\./
+  FIND_A_SLASH    = /\//
+  PATH_HAS_A_HOST = /^[^\/]+\/?/
 
   extend self
 
@@ -21,7 +24,18 @@ module Mu_URI
     new_s
   end # === def unescape
 
-  def slash_for_relative_urls(u : URI)
+  def set_default_host(n : Nil)
+    nil
+  end # === def set_default_host
+
+  def set_default_host(u : URI)
+    if !u.scheme && !u.host && (u.path.is_a?(String) && u.path =~ FIND_A_DOT && u.path =~ PATH_HAS_A_HOST)
+      u.scheme = "http"
+    end
+    u
+  end # === def set_default_host
+
+  def require_slash_for_relative_urls(u : URI)
     if !u.scheme && u.path && u.path !~ BEGINNING_SLASH
       return nil
     end
@@ -133,7 +147,8 @@ module Mu_URI
     # URL was invalid to begin with. Return nil to be
     # safe.
     return nil if origin_scheme && !u.scheme
-    u = slash_for_relative_urls(u)
+    u = set_default_host(u)
+    u = require_slash_for_relative_urls(u)
     normalize(u)
   end # === def escape
 

@@ -1,10 +1,15 @@
 
 # === {{CMD}}
+# === {{CMD}}  specs/000-name_of_directory
 edit-spec () {
   cd "$THIS_DIR"
-  local +x DIR="$(
-    find -L specs -maxdepth 1 -mindepth 1 -type d | fzy || :
-  )"
+  if [[ -z "$@" ]]; then
+    local +x DIR="$(
+      find -L specs -maxdepth 1 -mindepth 1 -type d | fzy || :
+    )"
+  else
+    local +x DIR="$1"; shift
+  fi
 
   if [[ -z "$DIR" ]]; then
     exit 0
