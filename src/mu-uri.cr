@@ -4,8 +4,9 @@ require "html"
 
 module Mu_URI
 
-  VALID_FRAGMENT = /^[a-zA-Z0-9\_\-]+$/
+  VALID_FRAGMENT  = /^[a-zA-Z0-9\_\-]+$/
   BEGINNING_SLASH = /^\//
+  CNTRL_CHARS     = /[[:cntrl:]]+/i
 
   extend self
 
@@ -80,8 +81,16 @@ module Mu_URI
     HTML.escape(fin)
   end # === def normalize
 
+  def clean_cntrl_chars(s : String)
+    return nil if s =~ CNTRL_CHARS
+    s
+  end # === def clean_cntrl_chars
+
   def escape(raw : String)
     raw = unescape(raw.strip)
+    raw = clean_cntrl_chars(raw)
+    return nil unless raw
+
     u = URI.parse(raw)
 
     origin_scheme = u.scheme

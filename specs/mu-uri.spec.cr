@@ -4,21 +4,25 @@ DIR = ARGV.first
 
 INPUTS = [] of String
 
-if File.exists?(DIR + "/input")
+if File.file?(DIR + "/input")
   INPUTS << File.read(DIR + "/input")
 end
 
-if File.exists?(DIR + "/multi-input")
+if File.file?(DIR + "/multi-input")
   File.read(DIR + "/multi-input").split("\n").each do |line|
     INPUTS << line
+  end
+end
+
+if File.directory?(DIR + "/input")
+  Dir.glob(DIR + "/input/*").each do |file|
+    INPUTS << File.read(file)
   end
 end
 
 raise Exception.new("No input found.") if INPUTS.empty?
 
 EXPECT = case
-         when File.exists?(DIR + "/output")
-           File.read(DIR+"/output").rstrip
          when File.exists?(DIR + "/error")
            :error
          when File.exists?(DIR + "/false")
@@ -27,9 +31,17 @@ EXPECT = case
            true
          when File.exists?(DIR + "/nil")
            nil
+
+         when File.exists?(DIR + "/output")
+           # Check for /output last,
+           # other files take precedence if multiple files exist.
+           # (e.g. /error, /nil, etc.)
+           File.read(DIR+"/output").rstrip
+
          else
            raise Exception.new("Expected value not found in: #{DIR}")
-         end
+
+         end # === case
 
 
 def input_separator
