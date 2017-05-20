@@ -1,3 +1,6 @@
 http:foo.com
 http://
 http:
+ftp:example.com
+https:example.com
+data:example.com

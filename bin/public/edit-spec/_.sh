@@ -38,7 +38,7 @@ edit-spec () {
           ;;
         *)
           echo "=== Touching: $NEW_TYPE" >&2
-          touch "$NEW_TYPE"
+          $EDITOR "$NEW_TYPE"
           ;;
       esac
       ;;
