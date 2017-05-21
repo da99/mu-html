@@ -24,7 +24,10 @@ new-spec () {
 
   echo "$DIR"
   source "$THIS_DIR/bin/public/edit-spec/_.sh"
+  echo "=== INPUT:"
   edit-spec "$DIR" create
+  echo "=== OUTPUT:"
   edit-spec "$DIR" create
+  echo "=== Running specs..."
   mu-uri run-specs
 } # === end function
