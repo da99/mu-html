@@ -3,12 +3,20 @@
 # === {{CMD}}  specs/000-name_of_directory
 edit-spec () {
   cd "$THIS_DIR"
-  if [[ -z "$@" ]]; then
+  local +x DIR=""
+  local +x ACTION=""
+
+  if [[ ! -z "$@" ]]; then
+    local +x DIR="$1"; shift
+    if [[ ! -z "$@" ]]; then
+      local +x ACTION="$1"; shift
+    fi
+  fi
+
+  if [[ -z "$DIR" ]]; then
     local +x DIR="$(
       find -L specs -maxdepth 1 -mindepth 1 -type d | fzy || :
     )"
-  else
-    local +x DIR="$1"; shift
   fi
 
   if [[ -z "$DIR" ]]; then
@@ -19,13 +27,15 @@ edit-spec () {
   echo "$DIR:"
   tree --noreport
 
-  local +x ACTION="$(echo "create\nedit" | fzy || :)"
+  if [[ -z "$ACTION" ]]; then
+    local +x ACTION="$(echo "create\nedit" | fzy || :)"
+  fi
 
   case "$ACTION" in
     create)
-      echo "=== Creating: "
+      echo "=== Create new file: "
       local +x NEW_TYPE="$(
-        for O in input input/ multi-input output nil error; do
+        for O in input input/ multi-input output multi-output nil error; do
           echo $O
         done | fzy || :
       )"
@@ -42,7 +52,7 @@ edit-spec () {
           mkdir -p "$NEW_TYPE"
           ;;
         *)
-          echo "=== Touching: $NEW_TYPE" >&2
+          echo "=== Editing: $NEW_TYPE" >&2
           $EDITOR "$NEW_TYPE"
           ;;
       esac
