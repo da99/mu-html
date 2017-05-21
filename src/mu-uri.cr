@@ -110,13 +110,19 @@ module Mu_URI
     fin = u.normalize.to_s.strip
     return nil if fin == ""
     return nil if is_empty?(u.host) && is_empty?(u.path) && is_empty?(u.fragment)
-    HTML.escape(fin)
+    HTML.escape(escape_non_ascii(fin))
   end # === def normalize
 
   def clean_cntrl_chars(s : String)
     return nil if s =~ CNTRL_CHARS
     s
   end # === def clean_cntrl_chars
+
+  def escape_non_ascii(s : String)
+    s.gsub( /[^[:ascii:]]+/ ) do | str |
+      URI.escape(str)
+    end
+  end # === def escape_non_ascii
 
   def clean_host(s : String)
     return nil if s =~ WHITE_SPACE
@@ -125,11 +131,7 @@ module Mu_URI
     decoded = URI.unescape(s)
     return nil if decoded != s
 
-    escaped = s.gsub( /[^[:ascii:]]+/ ) do | str |
-      URI.escape(str)
-    end
-
-    escaped
+    escape_non_ascii(s)
   end # === def clean_host
 
   def clean_host(u : URI)
