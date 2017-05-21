@@ -26,4 +26,5 @@ new-spec () {
   source "$THIS_DIR/bin/public/edit-spec/_.sh"
   edit-spec "$DIR"
   edit-spec "$DIR"
+  mu-uri run-specs
 } # === end function

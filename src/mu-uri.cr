@@ -61,10 +61,6 @@ module Mu_URI
     u
   end # === def clean_fragment
 
-  def clean_scheme(n : Nil)
-    nil
-  end # === def clean_scheme
-
   def is_allowed_scheme?(s : String)
     case s
     when "http", "https", "ftp", "sftp"
@@ -73,7 +69,12 @@ module Mu_URI
     false
   end
 
+  def clean_scheme(n : Nil)
+    nil
+  end # === def clean_scheme
+
   def clean_scheme(s : String)
+    s = URI.unescape(s)
     return s if is_allowed_scheme?(s)
 
     new_s = URI.unescape(s.downcase.strip)
@@ -82,12 +83,12 @@ module Mu_URI
   end
 
   def clean_scheme(u : URI)
-    scheme = u.scheme
-    case scheme
+    sch = u.scheme
+    case sch
     when String
-      u.scheme= (clean_scheme(scheme) || clean_scheme(scheme.downcase.strip))
+      u.scheme= (clean_scheme(sch) || clean_scheme(sch.downcase.strip))
     else
-      u.scheme = clean_scheme(scheme)
+      u.scheme = clean_scheme(sch)
     end
 
     u
@@ -120,6 +121,10 @@ module Mu_URI
   def clean_host(s : String)
     return nil if s =~ WHITE_SPACE
     return nil if s.empty?
+
+    decoded = URI.unescape(s)
+    return if decoded != s
+
     s
   end # === def clean_host
 
@@ -134,6 +139,39 @@ module Mu_URI
     return u
   end # === def clean_host
 
+  def clean_path(s : String)
+    return nil if is_empty?(s)
+    new_s = s.strip
+    decoded = URI.unescape(new_s)
+    return nil if decoded != new_s
+    new_s
+  end # === def clean_path
+
+  def clean_path(n : Nil)
+    nil
+  end # === def clean_path
+
+  def clean_path(u : URI)
+    new_p = clean_path(u.path)
+    u.path = new_p
+    u
+  end # === def clean_path
+
+  def clean_user(u : URI)
+    u.user = nil
+    u
+  end # === def clean_user
+
+  def clean_password(u : URI)
+    u.password = nil
+    u
+  end # === def clean_password
+
+  def clean_opaque(u : URI)
+    u.opaque = nil
+    u
+  end # === def clean_opaque
+
   def escape(raw : String)
     raw = unescape(raw.strip)
     raw = clean_cntrl_chars(raw)
@@ -143,7 +181,7 @@ module Mu_URI
 
     origin_scheme = u.scheme
 
-    {% for meth in "scheme fragment host".split  %}
+    {% for meth in "scheme user password opaque fragment host path".split  %}
       if u
         u = clean_{{meth.id}}(u)
         return u unless u
