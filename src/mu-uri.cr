@@ -63,7 +63,7 @@ module Mu_URI
 
   def is_allowed_scheme?(s : String)
     case s
-    when "http", "https", "ftp", "sftp"
+    when "http", "https", "ftp", "sftp", "git", "ssh", "svn"
       return true
     end
     false
@@ -123,9 +123,13 @@ module Mu_URI
     return nil if s.empty?
 
     decoded = URI.unescape(s)
-    return if decoded != s
+    return nil if decoded != s
 
-    s
+    escaped = s.gsub( /[^[:ascii:]]+/ ) do | str |
+      URI.escape(str)
+    end
+
+    escaped
   end # === def clean_host
 
   def clean_host(u : URI)
