@@ -9,13 +9,21 @@ def read_file(s : String)
   File.read(s).gsub(LAST_NEW_LINE, "")
 end # === def read_file
 
+def spaces(s : String)
+  if s.size < 12
+    " " * (12 - s.size)
+  else
+    " "
+  end
+end
+
 def inspect_uri(s : String)
   uri = URI.parse(s)
   puts "INPUT:\t#{s.inspect}"
   {% for id in ["scheme", "opaque", "user", "password", "host", "path", "query", "fragment"] %}
-    puts "{{id.id}}:\t#{uri.{{id.id}}.inspect}"
+    puts "{{id.id}}:#{spaces {{id.stringify}}}#{uri.{{id.id}}.inspect}"
   {% end %}
-  puts "normalize:\t#{uri.normalize.to_s.inspect}"
+  puts "normalize: #{uri.normalize.to_s.inspect}"
 end # === def inspect_uri
 
 if File.file?(DIR + "/input")
@@ -84,7 +92,7 @@ INPUTS.each_index do |i|
   end
 
   puts inspect_uri(input)
-  puts "RED{{FAILED}}: #{DIR}"
+  puts "RED{{FAILED}}: BOLD{{#{DIR}}}"
   puts "BOLD{{INPUT}}: #{input.inspect}"
   puts "#{actual.inspect} RED{{!=}} #{expect.inspect}"
   exit 1
