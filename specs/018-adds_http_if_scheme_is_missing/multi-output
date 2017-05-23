@@ -7,3 +7,5 @@ http://about.me/txt
 http://about/me/something
 http://javascript//:alert&#40;&quot;2&quot;&#41;
 http://javascript/:/alert&#40;&quot;4&quot;&#41;
+http://data//:text/html;base64,PHNjcmlwdD5hbGVydCgnMycpPC9zY3JpcHQ&#43;
+http://data/:/text/html;base64,PHNjcmlwdD5hbGVydCgnNCcpPC9zY3JpcHQ&#43;

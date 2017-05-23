@@ -7,3 +7,5 @@ about.me/txt
 about/me/something
 javascript//:alert("2")
 javascript/:/alert("4")
+data//:text/html;base64,PHNjcmlwdD5hbGVydCgnMycpPC9zY3JpcHQ+
+data/:/text/html;base64,PHNjcmlwdD5hbGVydCgnNCcpPC9zY3JpcHQ+
