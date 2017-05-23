@@ -24,19 +24,39 @@ module Mu_URI
     new_s
   end # === def unescape
 
-  def set_default_host(n : Nil)
-    nil
-  end # === def set_default_host
-
   def set_default_host(u : URI)
-    if !u.scheme && !u.host && (u.path.is_a?(String) && u.path =~ FIND_A_DOT && u.path =~ PATH_HAS_A_HOST)
-      u.scheme = "http"
+    return u unless is_empty?(u.host)
+    return u if is_empty?(u.path)
+    path = u.path
+    case path
+    when String
+      crumbs = path.split("/")
+      return u if crumbs.empty?
+      return u if is_empty?(crumbs.first) # /some/path
+      new_host = crumbs.first
+      crumbs[0] = ""
+      u.host = new_host
+      u.path = crumbs.join("/")
+      u.path = nil if is_empty?(u.path)
     end
     u
   end # === def set_default_host
 
+  def set_default_scheme(n : Nil)
+    nil
+  end # === def set_default_scheme
+
+  def set_default_scheme(u : URI)
+    if !u.scheme
+      if !is_empty?(u.host)
+        u.scheme = "http"
+      end
+    end
+    u
+  end # === def set_default_scheme
+
   def require_slash_for_relative_urls(u : URI)
-    if !u.scheme && u.path && u.path !~ BEGINNING_SLASH
+    if !u.scheme && is_empty?(u.host) && (u.path.is_a?(String) && u.path !~ BEGINNING_SLASH)
       return nil
     end
     u
@@ -86,7 +106,7 @@ module Mu_URI
     sch = u.scheme
     case sch
     when String
-      u.scheme= (clean_scheme(sch) || clean_scheme(sch.downcase.strip))
+      u.scheme = (clean_scheme(sch) || clean_scheme(sch.downcase.strip))
     else
       u.scheme = clean_scheme(sch)
     end
@@ -174,11 +194,35 @@ module Mu_URI
   end # === def clean_password
 
   def clean_opaque(u : URI)
-    u.opaque = nil
+    o = u.opaque
+    return nil unless is_empty?(o)
     u
   end # === def clean_opaque
 
+  def inspect_uri(n : Nil)
+    puts n.inspect
+  end
+
+  def inspect_uri(s : String)
+    inspect_uri(URI.parse(s))
+  end # === def inspect_uri
+
+  def inspect_uri(uri : URI)
+    puts uri.to_s
+    {% for id in ["scheme", "opaque", "user", "password", "host", "path", "query", "fragment"] %}
+      spaces = " " * (15 - "{{id.id}}".size)
+      puts "{{id.id}}:#{spaces}#{uri.{{id.id}}.inspect}"
+    {% end %}
+    puts uri.normalize.to_s
+    puts ""
+  end # === def inspect_uri
+
   def escape(raw : String)
+    if raw.match(/\n/)
+      puts (raw).inspect
+      puts("i: " + (raw =~ /[[:cntrl:]]/).inspect)
+    end
+
     raw = unescape(raw.strip)
     raw = clean_cntrl_chars(raw)
     return nil unless raw
@@ -187,10 +231,11 @@ module Mu_URI
 
     origin_scheme = u.scheme
 
+    u = set_default_host(u)
     {% for meth in "scheme user password opaque fragment host path".split  %}
       if u
         u = clean_{{meth.id}}(u)
-        return u unless u
+        return nil unless u
       end
     {% end %}
 
@@ -198,9 +243,8 @@ module Mu_URI
     # URL was invalid to begin with. Return nil to be
     # safe.
     return nil if origin_scheme && !u.scheme
-    u = set_default_host(u)
+    u = set_default_scheme(u)
     u = require_slash_for_relative_urls(u)
     normalize(u)
   end # === def escape
-
 end # === module Mu_URI
