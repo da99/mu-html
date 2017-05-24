@@ -12,3 +12,6 @@ data/:/text/html;base64,PHNjcmlwdD5hbGVydCgnNCcpPC9zY3JpcHQ+
 htt$p://example.com
 j%avascript:alert("XSS")
 htДtp://example.com
+htДtp://example.com
+htt$p://example.com
+j%avascript:alert("XSS")

@@ -193,6 +193,14 @@ module Mu_URI
     u
   end # === def clean_password
 
+  # If .opaque is not nil, then that
+  # means we are dealing with a missing double slash:
+  # mailto:something
+  # git:something
+  # http:something
+  # These are all invalid, including a valid mailto.
+  # Those types of URIs should be handle by other shards/gems
+  # for better error checking and security.
   def clean_opaque(u : URI)
     o = u.opaque
     return nil unless is_empty?(o)
@@ -218,11 +226,6 @@ module Mu_URI
   end # === def inspect_uri
 
   def escape(raw : String)
-    if raw.match(/\n/)
-      puts (raw).inspect
-      puts("i: " + (raw =~ /[[:cntrl:]]/).inspect)
-    end
-
     raw = unescape(raw.strip)
     raw = clean_cntrl_chars(raw)
     return nil unless raw

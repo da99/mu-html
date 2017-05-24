@@ -12,3 +12,6 @@ http://data/:/text/html;base64,PHNjcmlwdD5hbGVydCgnNCcpPC9zY3JpcHQ&#43;
 http://htt&#36;p://example.com
 http://j&#37;avascript:alert&#40;&quot;XSS&quot;&#41;
 http://ht&#37;D0&#37;94tp://example.com
+http://ht&#37;D0&#37;94tp://example.com
+http://htt&#36;p://example.com
+http://j&#37;avascript:alert&#40;&quot;XSS&quot;&#41;
