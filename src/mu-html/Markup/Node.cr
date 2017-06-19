@@ -4,7 +4,7 @@ module Mu_Html
 
     struct Node
 
-      include Clean_Tags
+      include Markup::Clean_Tags
 
       getter parent_tag : String
       getter data     : Hash(String, JSON::Type)
@@ -18,8 +18,8 @@ module Mu_Html
         arr.each { |v|
           case v
           when Array(JSON::Type)
-            next if parent_tag != "head" && Clean_Tags::HEAD_TAGS.includes?(v.first)
-            next if parent_tag == "head" && !Clean_Tags::HEAD_TAGS.includes?(v.first)
+            next if parent_tag != "head" && Markup::Clean_Tags::HEAD_TAGS.includes?(v.first)
+            next if parent_tag == "head" && !Markup::Clean_Tags::HEAD_TAGS.includes?(v.first)
             Node.new(io, v, parent_tag, data)
           else
             raise Exception.new("Invalid tag: #{v.inspect}")

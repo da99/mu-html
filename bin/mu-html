@@ -1,6 +1,8 @@
 #!/usr/bin/env mksh
 #
 #
+set -u -e -o pipefail
+
 local +x THE_ARGS="$@"
 local +x THIS_DIR="$(dirname "$(dirname "$(realpath "$0")")")"
 
@@ -9,20 +11,21 @@ if [[ ! -z "$@" ]]; then
   ACTION="$1"; shift
 fi
 
-set -u -e -o pipefail
+PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
+PATH="$PATH:$THIS_DIR/../my_crystal/bin"
+PATH="$PATH:$THIS_DIR/bin"
 
 case $ACTION in
 
   help|--help|-h)
-    PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
     mksh_setup print-help $0 "$@"
     ;;
 
   *)
-
+    # === Check sh/:
     local +x FUNC_FILE="$THIS_DIR/sh/${ACTION}/_"
     if [[ -s  "$FUNC_FILE"  ]]; then
-      source "$THIS_FUNC"
+      source "$FUNC_FILE"
       exit 0
     fi
 

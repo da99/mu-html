@@ -73,48 +73,6 @@ module Mu_Html
       tags
     end
 
-    # =========================================================================
-    # === .escape =============================================================
-    # =========================================================================
-
-    def self.escape(s : String) : String
-      new_s = unescape(s)
-      HTML.escape(new_s)
-    end # === def self.escape
-
-    def self.escape(i : Int32 | Int64)
-      i
-    end # === def self.escape
-
-    def self.escape(a : Array)
-      a.map { |v| escape(v) }
-    end # === def self.escape
-
-    def self.escape(h : Hash(String, JSON::Type))
-      h.each do |k, v|
-        h[k] = escape(v)
-      end
-      h
-    end # === def self.escape
-
-    def self.escape(u)
-      raise Exception.new("Invalid value ")
-      escape(u.to_s)
-    end # === def self.escape
-
-    def self.unescape(s : String)
-      old_s = ""
-      new_s = s
-      while old_s != new_s
-        old_s = new_s
-        new_s = HTML.unescape(new_s)
-      end
-      new_s
-    end
-
-    def self.unescape(u)
-      unescape(u.to_s)
-    end
 
   end # === module Markup
 end # === module Mu_Html

@@ -1,7 +1,8 @@
 
+require "html"
 module Mu_Html
 
-  module Data
+  module Escape
 
     VALID_KEY = /^[a-zA-Z0-9\_\-]{1,20}$/
     DATA_ID_INVALID = /[^a-zA-Z0-9\_\-]+/
@@ -33,7 +34,7 @@ module Mu_Html
     end # === def self.clean_key
 
     def self.clean_value(s : String)
-      Markup.escape(s)
+      HTML.escape(s)
     end # === def self.clean_value
 
     def self.clean_value(i : Int32 | Int64)
@@ -144,6 +145,49 @@ module Mu_Html
       raise Exception.new("Can't delete data: #{data.inspect}, #{key.inspect}")
     end # === def self.delete
 
-  end # === module Data
+    # =========================================================================
+    # === .escape =============================================================
+    # =========================================================================
+
+    def self.escape(s : String) : String
+      new_s = unescape(s)
+      HTML.escape(new_s)
+    end # === def self.escape
+
+    def self.escape(i : Int32 | Int64)
+      i
+    end # === def self.escape
+
+    def self.escape(a : Array)
+      a.map { |v| escape(v) }
+    end # === def self.escape
+
+    def self.escape(h : Hash(String, JSON::Type))
+      h.each do |k, v|
+        h[k] = escape(v)
+      end
+      h
+    end # === def self.escape
+
+    def self.escape(u)
+      raise Exception.new("Invalid value ")
+      escape(u.to_s)
+    end # === def self.escape
+
+    def self.unescape(s : String)
+      old_s = ""
+      new_s = s
+      while old_s != new_s
+        old_s = new_s
+        new_s = HTML.unescape(new_s)
+      end
+      new_s
+    end
+
+    def self.unescape(u)
+      unescape(u.to_s)
+    end
+
+  end # === module Escape
 
 end # === module Mu_Html

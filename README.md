@@ -15,6 +15,18 @@ dependencies:
 ## Usage
 
 ```crystal
-require "mu-html"
+  require "mu-html"
+
+  Mu_Html.to_html do
+    html {
+      head {
+        title "My Title"
+      }
+      body {
+        p "My text."
+      }
+    }
+  end
+
 ```
 
