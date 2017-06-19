@@ -1,6 +1,5 @@
 /progs/
 /tmp/
-/doc/
-/lib/
-/.shards/
 /shard.lock
+/.shards/
+/lib/

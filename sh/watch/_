@@ -1,0 +1,46 @@
+#!/usr/bin/env mksh
+#
+# === {{CMD}}
+#
+set -u -e -o pipefail
+
+PATH="$PATH:$THIS_DIR/../my_crystal/bin"
+
+case "$(echo $@)" in
+
+  "")
+    CMD="mu-clean watch run"
+    $CMD || :
+    mksh_setup watch-file "specs/specs.cr" "$CMD"
+    ;;
+
+  run)
+    echo "=== Compiling..."
+    my_crystal build specs/specs.cr -o tmp/specs
+    echo "=== Running..."
+    tmp/specs
+    sh_color GREEN "=== {{Done}}"
+    ;;
+
+  convert)
+    CMD="mu-clean watch run-convert"
+    $CMD || :
+    mksh_setup watch-file "tmp/convert.cr" "$CMD"
+    ;;
+
+  run-convert)
+    echo "=== Compiling..."
+    my_crystal build tmp/convert.cr -o tmp/convert
+    echo "=== Running..."
+    tmp/convert
+    sh_color GREEN "=== {{Done}}"
+    ;;
+
+  *)
+    echo "!!! Invalid option: $@" >&2
+    exit
+    ;;
+
+esac
+
+
