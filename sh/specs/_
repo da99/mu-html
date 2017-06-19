@@ -1,0 +1,15 @@
+#!/usr/bin/env mksh
+#
+
+PATH="$PATH:$THIS_DIR/../my_crystal/bin"
+PATH="$PATH:$THIS_DIR/../sh_color/bin"
+
+# === {{CMD}}
+cd "$THIS_DIR"
+
+echo "=== Compiling..."
+mkdir -p tmp
+my_crystal build specs/specs.cr -o tmp/specs
+
+echo "=== Running..."
+tmp/specs

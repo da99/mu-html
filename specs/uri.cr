@@ -184,14 +184,15 @@ describe "Mu_Clean.uri" do
     Mu_Clean.uri("mailto:someone@example.com").should(eq nil)
   end
 
-  it "dereferences numerics" do
-    # hex_UTF8_char_ref
+  it "dereferences numerics: hex_UTF8_char_ref" do
     Mu_Clean.uri("http://example.com/&#x6A;").should(eq "http://example.com/j")
+  end
 
-    # long_form_decimal_UTF8_char_ref
+  it "dereferences numerics: long_form_decimal_UTF8_char_ref" do
     Mu_Clean.uri("http://example.com/&#0000106;").should(eq "http://example.com/j")
+  end
 
-    # short_form_decimal_UTF8_char_ref
+  it "dereferences numerics: short_form_decimal_UTF8_char_ref" do
     Mu_Clean.uri("http://example.com/&#106;").should(eq "http://example.com/j")
   end
 
