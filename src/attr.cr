@@ -86,8 +86,13 @@ module Mu_Clean
         return nil if !val
 
         new_val = case
+
+                  when tag == "html" && name == "lang"
+                    val =~ /^[a-z0-9\-\_]+$/ && val
+
                   when name == "id"
                     val =~ /^[a-z0-9\_\-]+$/i && val
+
                   when tag == "input" && name == "name"
                     val =~ /^[a-zA-Z0-9\_\-]+$/ && val
 
@@ -131,6 +136,9 @@ module Mu_Clean
 
                   when tag == "form" && name == "action"
                     val =~ /^\/[a-zA-Z0-9\.\_\-\/]+$/ && Mu_Clean.uri(val)
+
+                  when tag == "meta" && name == "charset"
+                    val =~ /^[a-z\-0-9]+$/ && val
 
                   when tag == "meta" && name == "http-equiv" && val =~ /^content-security-policy$/i
                     content = attrs["content"]?
