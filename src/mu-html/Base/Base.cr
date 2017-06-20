@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   module Base
 
@@ -32,4 +32,4 @@ module Mu_HTML
 
   end # === module Base
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

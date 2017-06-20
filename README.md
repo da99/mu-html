@@ -1,6 +1,6 @@
-# mu-html
+# mu-www
 
-HTML to a WWW-App... in Crystal.
+Utilities to generate and clean WWW-releated input.
 
 ## Installation
 
@@ -8,16 +8,16 @@ Add this to your application's `shard.yml`:
 
 ```yaml
 dependencies:
-  mu-html:
-    github: [your-github-name]/mu-html
+  mu-www:
+    github: [your-github-name]/mu-www
 ```
 
 ## Usage
 
 ```crystal
-  require "mu-html"
+  require "mu-www"
 
-  Mu_HTML.to_html do
+  Mu_WWW_HTML.render do
     html {
       head {
         title "My Title"

@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
   module Style
 
     COMMON_ID = /[\#\.a-z0-9\-\_]+/
@@ -103,4 +103,4 @@ module Mu_HTML
 
     end # === struct State
   end # === module Style
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

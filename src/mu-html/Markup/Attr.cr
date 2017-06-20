@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
   module Markup
     struct Attr
 
@@ -58,4 +58,4 @@ module Mu_HTML
 
     end # === struct Attr
   end # === module Markup
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

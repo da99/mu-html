@@ -22,7 +22,7 @@
 
 
 it "works" do
-  input = Mu_HTML.render do
+  input = Mu_WWW_HTML.render do
     html do
       head {
         title "TITLE"
@@ -46,7 +46,7 @@ it "works" do
         })
       }
     end
-  end # === Mu_HTML
+  end # === Mu_WWW_HTML
 
 output = %[
 <!DOCTYPE html>

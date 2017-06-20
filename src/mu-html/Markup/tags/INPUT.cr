@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   TAG_OF_INPUT_ALLOWED_TYPES = {"hidden"}
   VALID_NAME                 = /[a-z0-9\_\-]+/
@@ -25,4 +25,4 @@ module Mu_HTML
 
   end # === def_markup
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

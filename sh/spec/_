@@ -13,22 +13,22 @@ case "$1" in
   run)
     cd "$THIS_DIR"
     mkdir -p tmp
-    local +x output=tmp/mu-html.spec
+    local +x output=tmp/spec
     echo "=== Compiling specs: $output"
-    my_crystal build spec/mu-html.spec.cr -o $output
+    my_crystal build spec/spec.cr -o $output
     echo "=== Running specs: $output"
     $output
     sh_color GREEN "=== {{DONE}} ==="
     ;;
 
   bin-path)
-    echo "$SPEC_TMP"/mu-html.spec
+    echo "$SPEC_TMP"/spec
     ;;
 
   compile)
     mkdir -p "$SPEC_TMP"
     cd "$SPEC_TMP"
-    my_crystal build "$THIS_DIR/spec/mu-html.spec.cr"
+    my_crystal build "$THIS_DIR/spec/spec.cr"
     echo "=== Wrote: $SPEC_TMP/mu-html.spec"
     ;;
 

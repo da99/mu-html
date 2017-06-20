@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
   module Markup
     module Tags
 
@@ -10,7 +10,7 @@ module Mu_HTML
 
     end # === module Tags
   end # === module Markup
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML
 
   # def_markup do
   #   in_tag_head!

@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   VALID_EACH_AS = /^[a-zA-Z0-9\_\-]{1,20}$/
   VALID_EACH_IN = /^[a-zA-Z0-9\_\.\-]{1,20}$/
@@ -30,4 +30,4 @@ module Mu_HTML
 
   end # === def_markup
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

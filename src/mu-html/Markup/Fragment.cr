@@ -1,6 +1,6 @@
 
 
-module Mu_HTML
+module Mu_WWW_HTML
   module Markup
     struct Fragment
 
@@ -31,4 +31,4 @@ module Mu_HTML
 
     end # === struct Fragment
   end # === module Markup
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

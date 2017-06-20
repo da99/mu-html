@@ -1,7 +1,7 @@
 
 require "html"
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   module Escape
 
@@ -191,4 +191,4 @@ module Mu_HTML
 
   end # === module Escape
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

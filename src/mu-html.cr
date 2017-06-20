@@ -1,9 +1,9 @@
 
 require "json"
 require "mu-clean"
-# require "./mu-html/Markup/Markup"
+# require "./mu-www/Markup/Markup"
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   extend self
 
@@ -158,5 +158,5 @@ module Mu_HTML
 
   end # === class DSL
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML
 

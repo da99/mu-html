@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   def_markup do
     attr? "id"
@@ -10,4 +10,4 @@ module Mu_HTML
     end
   end # === def_markup
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

@@ -1,6 +1,6 @@
 
 
-module Mu_HTML
+module Mu_WWW_HTML
   module Markup
 
     module Clean_Tags
@@ -67,4 +67,4 @@ module Mu_HTML
 
     end # === struct Clean
   end # === module Markup
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

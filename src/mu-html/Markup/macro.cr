@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   macro def_markup(name, &block)
     module Markup
@@ -33,4 +33,4 @@ module Mu_HTML
     end # === module Clean_Tags
   end # === module Markup
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

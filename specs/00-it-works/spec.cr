@@ -17,7 +17,7 @@ style = {
 }
 
 
-input = Mu_HTML.render do
+input = Mu_WWW_HTML.render do
   html do
     head {
       meta({"charset"=>"utf-8"})

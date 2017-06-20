@@ -8,14 +8,14 @@ arr = [
   ["p", "my_name"] of JSON::Type
 ] of JSON::Type
 
-module Mu_HTML
+module Mu_WWW_HTML
   extend self
   def to_html(o, data : Hash(String, JSON::Type))
     page = o.new(IO::Memory.new, data)
     page.html
     page.to_s
   end
-end # === Mu_HTML
+end # === Mu_WWW_HTML
 
 module To_Html
 

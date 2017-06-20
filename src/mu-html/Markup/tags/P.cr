@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
 
   def_markup do
 
@@ -11,4 +11,4 @@ module Mu_HTML
 
   end # === def_markup
 
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML

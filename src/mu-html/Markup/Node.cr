@@ -1,5 +1,5 @@
 
-module Mu_HTML
+module Mu_WWW_HTML
   module Markup
 
     struct Node
@@ -225,4 +225,4 @@ module Mu_HTML
 
     end # === struct Node
   end # === module Markup
-end # === module Mu_HTML
+end # === module Mu_WWW_HTML
