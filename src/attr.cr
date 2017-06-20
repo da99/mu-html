@@ -42,5 +42,23 @@ module Mu_Clean
       nil
     end # === def attr_class
 
+    def href(tag_name : String, val : String)
+      case
+      when tag_name == "a"
+        return Mu_Clean.uri(val)
+      end
+
+      nil
+    end # === def href
+
+    def action(tag_name : String, val : String)
+      case
+      when tag_name == "form" && val =~ /^\/[a-zA-Z0-9\.\_\-\/]+$/
+        return Mu_Clean.uri(val)
+      end
+
+      nil
+    end # === def action
+
   end # === module Attr
 end # === module Mu_Clean

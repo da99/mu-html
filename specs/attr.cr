@@ -40,3 +40,29 @@ describe "Mu_Clean.attr(tag_name, \"class\", val)" do
   end
 
 end # === describe
+
+describe "Mu_Clean.attr(\"a\", \"href\", val)" do
+
+  it "returns nil if value is an invalid uri" do
+    Mu_Clean.attr("a", "href", "javascript://alert()").should eq(nil)
+  end
+
+  it "returns value if value is a valid uri" do
+    Mu_Clean.attr("a", "href", "/home/home/home").should eq("/home/home/home")
+  end
+
+end # === describe
+
+describe %[ Mu_Clean.attr("form", "action", val) ] do
+  it "returns nil if value is an invalid uri" do
+    Mu_Clean.attr("form", "action", "javascript://alert()").should eq(nil)
+  end
+
+  it "returns nil if value is not a path" do
+    Mu_Clean.attr("form", "action", "http://my.uri/").should eq(nil)
+  end
+
+  it "allows a value of a relative path" do
+    Mu_Clean.attr("form", "action", "/my.uri/").should eq("/my.uri/")
+  end
+end # === describe
