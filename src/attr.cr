@@ -98,17 +98,33 @@ module Mu_Clean
                   when name == "class"
                     val.is_a?(String) && val =~ /^[a-zA-Z0-9\_\ ]+$/ && val
 
+                  when tag == "link" && name == "href"
+                    val =~ /^\/[a-zA-Z\.0-9\-\_\/]+$/ && Mu_Clean.uri(val)
+
+                  when tag == "link" && name == "rel"
+                    val =~ /^[a-zA-Z0-9\ ]+$/ && val
+
+                  when tag == "link" && name == "title"
+                    val =~ /^[a-zA-Z0-9\ \_\-\.]+$/ && val
+
+                  when tag == "link" && name == "type" && val =~ /^text\/css;?$/i
+                    val
+
+                  when tag == "link" && name == "media" && val =~ /^[\(\)\-\:\ a-zA-Z0-9]+$/
+
                   when tag == "a" && name == "href"
                     Mu_Clean.uri(val)
 
                   when tag == "form" && name == "action"
                     val =~ /^\/[a-zA-Z0-9\.\_\-\/]+$/ && Mu_Clean.uri(val)
 
-                  when tag == "meta" && name == "http-equiv"
-                    case val
-                    when "content-security-policy", "content-type", "set-cookie"
-                      val
-                    end
+                  when tag == "meta" && name == "http-equiv" && val =~ /^content-security-policy$/i
+                    content = attrs["content"]?
+                    content.is_a?(String) && content =~ /^[a-zA-Z\;\:\/\ \*\'\-\_\.]+$/ && val
+
+                  when tag == "meta" && name == "http-equiv" && val =~ /^Content-Type$/i
+                    content = attrs["content"]?
+                    content.is_a?(String) && content =~ /^[a-zA-Z\;\-\=\/\ ]+$/ && val
 
                   when tag == "meta" && name == "name" && val == "keywords"
                     content = attrs["content"]?
