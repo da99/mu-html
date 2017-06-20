@@ -57,7 +57,7 @@ module Mu_Clean
     Uri.clean(*args)
   end # === def uri
 
-  def attr(*args)
+  def attrs(*args)
     Attr.clean(*args)
   end # === def attr
 
