@@ -1,5 +1,6 @@
 
 require "colorize"
+
 def strip(str : String)
   io = IO::Memory.new
   str.strip.each_line { |s|
@@ -22,10 +23,11 @@ def compare(raw_input, raw_output, filename)
     puts output.colorize(:yellow)
     exit 1
   end
-  puts "#{"PASSED".colorize(:green)}: #{filename}"
-  # input.should eq(output)
+
+  it filename do
+    input.should eq(output)
+  end
 end # === def compare
 
-{% for raw_name in `find specs -maxdepth 1 -mindepth 1 -type d -not -name "tmp"`.split %}
-  require "./{{raw_name.gsub(/^specs\//, "").id}}/spec.cr"
-{% end %}
+require "./html/*"
+

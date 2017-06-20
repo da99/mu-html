@@ -1,6 +1,5 @@
 
-module Mu_Clean
-  module Data
+module Mu_WWW_Data
 
     extend self
 
@@ -165,6 +164,4 @@ module Mu_Clean
       raise Exception.new("Invalid json: JSON must be an Object with keys and values..")
     end
 
-
-  end # === module Data
-end # === module Mu_Clean
+end # === module Mu_WWW_Data

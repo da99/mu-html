@@ -2,6 +2,3 @@
 Markup
 - template data vars can not have invalid values: 
     {p: "{my.data}"} -> <p>{{{my.data}}}</p> -> Security risk because {{{ are unescape HTML rendered.
-
-- rendered data is escaped:
-  {p: "my.data"} -> <p>My &amp; data</p>

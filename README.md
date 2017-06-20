@@ -1,21 +1,19 @@
-# mu-www
+mu-www
+==========
 
-Utilities to generate and clean WWW-releated input.
+Utilities to generate and clean WWW-releated content.
+Written as a Crystal shard.
 
-## Installation
-
-Add this to your application's `shard.yml`:
-
-```yaml
-dependencies:
-  mu-www:
-    github: [your-github-name]/mu-www
-```
-
-## Usage
+Usage
+=============
 
 ```crystal
   require "mu-www"
+
+  Mu_WWW_Attr.clean("input", {"type"=>"hidden", "value"=>"my val"})
+  Mu_WWW_Attr.clean("meta", {"name"=>"keywords", "content"=>" <my content> "})
+  Mu_WWW_HTML.escape("my <html>")
+  Mu_WWW_URI.clean("http://my.uri")
 
   Mu_WWW_HTML.render do
     html {
@@ -30,34 +28,19 @@ dependencies:
 
 ```
 
-
-
-Usage
-=====
-
-```crystal
-
-  require "mu-clean"
-
-  Mu_Clean.attrs("input", {"type"=>"hidden", "value"=>"my val"})
-  Mu_Clean.attrs("meta", {"name"=>"keywords", "content"=>" <my content> "})
-  Mu_Clean.escape("my <html>")
-  Mu_Clean.uri("http://my.uri")
-
-```
-
-Void Linux
+Linux
 ==========
 
-Install libxml2-devel
+Install libxml2-dev
+Install libxml2-devel (for Void Linux)
 
 
-Mu\_Clean.uri
-================
+Mu\_WWW\_URI.clean
+==================
 
 I use this shard to sanitize uri/urls for `src` and `href` html attributes.
 
-however, if you know of another uri/url sanitization shard to be used for
+However, if you know of another uri/url sanitization shard to be used for
 `src` and `href` attributes, please let me know in the "issues" section
 so i can tell others about it.
 

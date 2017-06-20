@@ -13,6 +13,7 @@ fi
 
 PATH="$PATH:$THIS_DIR/../mksh_setup/bin"
 PATH="$PATH:$THIS_DIR/../my_crystal/bin"
+PATH="$PATH:$THIS_DIR/../sh_color/bin"
 PATH="$PATH:$THIS_DIR/bin"
 
 case $ACTION in
@@ -23,17 +24,9 @@ case $ACTION in
 
   *)
     # === Check sh/:
-    local +x FUNC_FILE="$THIS_DIR/sh/${ACTION}/_"
-    if [[ -s  "$FUNC_FILE"  ]]; then
-      source "$FUNC_FILE"
-      exit 0
-    fi
-
-    # === Check progs/bin:
-    local +x BIN_FILE="$THIS_DIR/progs/bin/$ACTION"
-    if [[ -x "$BIN_FILE" ]]; then
-      export PATH="$THIS_DIR/progs/bin:$PATH"
-      "$ACTION" "$@"
+    local +x SHELL_SCRIPT="$THIS_DIR/sh/${ACTION}"/_
+    if [[ -s  "$SHELL_SCRIPT"  ]]; then
+      source "$SHELL_SCRIPT"
       exit 0
     fi
 

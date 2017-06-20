@@ -1,7 +1,6 @@
 
 require "json"
-require "mu-clean"
-# require "./mu-www/Markup/Markup"
+require "html"
 
 module Mu_WWW_HTML
 
@@ -12,6 +11,50 @@ module Mu_WWW_HTML
     with markup yield
     markup.io.rewind.to_s
   end # === def to_html
+
+  # =========================================================================
+  # === .escape =============================================================
+  # =========================================================================
+
+  def escape(s : String) : String
+    new_s = unescape(s)
+    HTML.escape(new_s)
+  end # === def escape
+
+  def escape(i : Int32 | Int64)
+    i
+  end # === def escape
+
+  def escape(a : Array)
+    a.map { |v| escape(v) }
+  end # === def escape
+
+  def escape(h : Hash(String, JSON::Type))
+    h.each do |k, v|
+      h[k] = escape(v)
+    end
+    h
+  end # === def escape
+
+  def escape(u)
+    raise Exception.new("Invalid value ")
+    escape(u.to_s)
+  end # === def escape
+
+  def unescape(s : String)
+    old_s = ""
+    new_s = s
+    while old_s != new_s
+      old_s = new_s
+      new_s = HTML.unescape(new_s)
+    end
+    new_s
+  end
+
+  def unescape(u)
+    unescape(u.to_s)
+  end
+
 
   # =========================================================================
   # === DSL =================================================================
@@ -114,7 +157,7 @@ module Mu_WWW_HTML
     end # === def write_tag
 
     def write_attrs(tag, raw_attrs)
-      attrs = Mu_Clean.attrs(tag, raw_attrs)
+      attrs = Mu_WWW_Attr.clean(tag, raw_attrs)
       if !attrs
         raise Exception.new("Invalid attributes: #{tag.inspect} #{raw_attrs.inspect}")
       end
@@ -153,7 +196,7 @@ module Mu_WWW_HTML
     end # === def write_tag_closed
 
     def write_tag_body(content : String)
-      @io << Mu_Clean.escape(content)
+      @io << Mu_WWW_HTML.escape(content)
     end # === def write_tag_body
 
   end # === class DSL
