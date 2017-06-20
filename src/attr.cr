@@ -86,6 +86,8 @@ module Mu_Clean
         return nil if !val
 
         new_val = case
+                  when name == "id"
+                    val =~ /^[a-z0-9\_\-]+$/i && val
                   when tag == "input" && name == "name"
                     val =~ /^[a-zA-Z0-9\_\-]+$/ && val
 
