@@ -57,14 +57,8 @@ module Mu_Clean
     Uri.clean(*args)
   end # === def uri
 
-  def attr(tag_name, name, val)
-    {% for meth in Attr.methods.select { |meth| meth.visibility == :public } %}
-      if name == {{meth.name.stringify}}
-        return Attr.{{meth.name.id}}(tag_name, val)
-      end
-    {% end %}
-
-    Attr.invalid(tag_name, name, val)
+  def attr(*args)
+    Attr.clean(*args)
   end # === def attr
 
   def empty?(n : Nil)

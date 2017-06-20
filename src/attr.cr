@@ -60,5 +60,77 @@ module Mu_Clean
       nil
     end # === def action
 
+    # For security reasons, "refresh" is left out.
+    def http_dash_equiv(tag_name, val)
+      # ==
+      return nil if tag_name != "meta"
+      case val
+      when "content-security-policy", "content-type", "set-cookie"
+        return val
+      end
+      nil
+    end # === def http_dash_equiv
+
+    def content(tag_name, val)
+      case
+      when tag_name == "meta"
+        return val
+      end
+
+      nil
+    end # === def content
+
+    def clean(tag, attrs : Hash(String, String))
+      attrs.keys.each do |name|
+        val  = attrs[name]
+        return nil if !val
+
+        new_val = case
+                  when tag == "input" && name == "name"
+                    val =~ /^[a-zA-Z0-9\_\-]+$/ && val
+
+                  when tag == "input" && name == "value"
+                    val =~ /^[a-zA-Z0-9\_\ \-\.]+$/ && val
+
+                  when tag == "input" && name == "type" && val == "hidden"
+                    "hidden"
+
+                  when name == "class"
+                    val.is_a?(String) && val =~ /^[a-zA-Z0-9\_\ ]+$/ && val
+
+                  when tag == "a" && name == "href"
+                    Mu_Clean.uri(val)
+
+                  when tag == "form" && name == "action"
+                    val =~ /^\/[a-zA-Z0-9\.\_\-\/]+$/ && Mu_Clean.uri(val)
+
+                  when tag == "meta" && name == "http-equiv"
+                    case val
+                    when "content-security-policy", "content-type", "set-cookie"
+                      val
+                    end
+
+                  when tag == "meta" && name == "name" && val == "keywords"
+                    content = attrs["content"]?
+                    content.is_a?(String) && content =~ /^[a-zA-Z0-9\,\_\-\ \,\>\<\/]+$/ && val
+
+                  when tag == "meta" && name == "content"
+                    val
+
+                  else
+                    nil
+
+                  end # == case
+
+        if new_val.is_a?(String)
+          attrs[name] = Mu_Clean.escape(new_val)
+        else
+          return nil
+        end
+      end
+
+      attrs
+    end # === def clean
+
   end # === module Attr
 end # === module Mu_Clean
