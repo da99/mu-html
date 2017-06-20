@@ -75,3 +75,8 @@ describe %[ Mu_Clean.attrs("meta", {"keywords"=>" <a> "}) ] do
 
 end # === describe
 
+describe %[ Mu_Clean.attrs("meta", {"charset"=>"utf-8"}) ] do
+  it "allows charset" do
+    Mu_Clean.attrs("meta", {"charset"=>"utf-8"}).should eq({"charset"=>"utf-8"})
+  end
+end # === describe
