@@ -11,7 +11,7 @@ case "$(echo $@)" in
   "")
     CMD="mu-clean watch run"
     $CMD || :
-    mksh_setup watch-file "specs/specs.cr" "$CMD"
+    mksh_setup watch "-r src -r specs" "$CMD"
     ;;
 
   run)

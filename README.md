@@ -1,5 +1,18 @@
 
 
+Usage
+=====
+
+```crystal
+
+  require "mu-clean"
+
+  Mu_Clean.attr("input", "type", "hidden")
+  Mu_Clean.escape("my <html>")
+  Mu_Clean.uri("http://my.uri")
+
+```
+
 Void Linux
 ==========
 
