@@ -2,6 +2,8 @@
 #
 # === {{CMD}}
 # === {{CMD}} dev|spec
+#
+set -u -e -o pipefail
 
 PATH="$PATH:$THIS_DIR/../sh_color/bin"
 PATH="$PATH:$THIS_DIR/../my_crystal/bin"
@@ -26,6 +28,7 @@ case "$ACTION" in
     my_crystal build specs/specs.cr -o tmp/specs
     echo "=== Running... $(date "+%H:%M:%S") ..." >&2
     tmp/specs
+    sh_color GREEN "=== {{Done}}"
     ;;
 
   spec)
@@ -35,13 +38,24 @@ case "$ACTION" in
     mksh_setup watch "-r src -r spec -r bin -r sh" "$CMD"
     ;;
 
+  convert)
+    CMD="mu-clean watch run-convert"
+    $CMD || :
+    mksh_setup watch-file "tmp/convert.cr" "$CMD"
+    ;;
+
+  run-convert)
+    echo "=== Compiling..."
+    my_crystal build tmp/convert.cr -o tmp/convert
+    echo "=== Running..."
+    tmp/convert
+    sh_color GREEN "=== {{Done}}"
+    ;;
+
   *)
-    echo "!!! Invalid option: $ACTION $@" >&2
-    exit 2
+    echo "!!! Invalid option: $@" >&2
+    exit
     ;;
 
 esac
-
-
-
 
