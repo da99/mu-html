@@ -95,6 +95,18 @@ module Mu_Clean
                   when tag == "input" && name == "type" && val == "hidden"
                     "hidden"
 
+                  when tag == "script" && name == "defer"
+                    (val =~ /true|false/i) && val
+
+                  when tag == "script" && name == "src"
+                    Mu_Clean.uri(val)
+
+                  when tag == "script" && name == "async"
+                    (val =~ /true|false/i) && val
+
+                  when tag == "script" && name == "src"
+                    val =~ /^[a-z0-9\_\.\/]+$/i && val
+
                   when name == "class"
                     val.is_a?(String) && val =~ /^[a-zA-Z0-9\_\ ]+$/ && val
 
