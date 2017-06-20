@@ -1,5 +1,5 @@
 
-module Mu_Html
+module Mu_HTML
   module Script
 
     def self.clean(json : Hash(String, JSON::Type))
@@ -11,4 +11,4 @@ module Mu_Html
     end # === def self.to_js
 
   end # === module Script
-end # === module Mu_Html
+end # === module Mu_HTML

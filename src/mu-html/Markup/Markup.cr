@@ -23,7 +23,7 @@ require "./tags/SPAN"
 require "./tags/IF"
 # =============================
 
-module Mu_Html
+module Mu_HTML
   module Markup
 
     DATA_ID_INVALID = /[^a-zA-Z\.\_\-0-9]+/
@@ -75,4 +75,4 @@ module Mu_Html
 
 
   end # === module Markup
-end # === module Mu_Html
+end # === module Mu_HTML

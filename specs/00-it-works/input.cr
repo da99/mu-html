@@ -37,6 +37,10 @@ html do
       p "name"
     }
     footer "copyright"
-    input({"name"=>"my-hidden", "type"=>"hidden", "value"=>"msg2"})
+    input({
+      "name"=>"my-hidden",
+      "type"=>"hidden",
+      "value"=>"msg2"
+    })
   }
 end

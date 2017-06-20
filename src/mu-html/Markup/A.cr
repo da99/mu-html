@@ -1,5 +1,5 @@
 
-module Mu_Html
+module Mu_HTML
   module Markup
 
     module A_Empty_String
@@ -61,5 +61,5 @@ module Mu_Html
 
     end # === module A_Data_ID
   end # === module Markup
-end # === module Mu_Html
+end # === module Mu_HTML
 

@@ -17,7 +17,7 @@ dependencies:
 ```crystal
   require "mu-html"
 
-  Mu_Html.to_html do
+  Mu_HTML.to_html do
     html {
       head {
         title "My Title"

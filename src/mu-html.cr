@@ -1,61 +1,35 @@
 
 require "json"
-require "./mu-html/Base/Base"
-require "./mu-html/Escape/Escape"
+require "mu-clean"
 # require "./mu-html/Markup/Markup"
 
-module Mu_Html
+module Mu_HTML
 
   extend self
 
-  # === Methods to parse data: =====================
-  def parse(path : String)
-    source = if File.file?(path)
-               content = File.read(path)
-               raise Exception.new("Empty file.") unless content
-               raise Exception.new("Invalid content encoding.") unless content.valid_encoding?
-               content
-             else
-               path
-             end
-
-    parse(JSON.parse_raw source)
-  end # === def parse
-
-  def parse(json : Hash(String, JSON::Type))
-    json.each_key { |k|
-      raise Exception.new("Unknown key: #{k}") unless SECTIONS.includes?(k)
-    }
-
-    Escape.escape(json)
-    Markup.clean(json)
-
-    content = {} of Symbol => String
-    Markup.to_s(json, content)
-
-    content
-  end # === def parse
-
-  def parse(u)
-    raise Exception.new("Invalid json: JSON must be an Object with keys and values..")
-  end
-
-  # === DSL: ========================================
-
-  def to_html
-    markup = Markup.new
+  def render
+    markup = DSL.new
     with markup yield
     markup.io.rewind.to_s
   end # === def to_html
 
-  class Markup
+  # =========================================================================
+  # === DSL =================================================================
+  # =========================================================================
+
+  class DSL
 
     getter io
+
     def initialize(
       @io : IO::Memory = IO::Memory.new,
       @data : Hash(String, JSON::Type) = {} of String => JSON::Type
     )
     end
+
+    # =========================================================================
+    # === TAGS ================================================================
+    # =========================================================================
 
     def html
       @io << "<!DOCTYPE html>"
@@ -68,6 +42,7 @@ module Mu_Html
       io << "\n  "
       write_tag("head") do
         yield
+      @io << "\n"
       end
     end # === def head
 
@@ -79,12 +54,18 @@ module Mu_Html
     end # === def body
 
     def title(txt = String)
+      @io << "\n"
       write_tag("title", txt)
     end # === def title
 
     def span(txt : String)
       write_tag("span", txt)
     end # === def span
+
+    def meta(attrs : Hash(String, String))
+      @io << "\n"
+      write_tag("meta", attrs)
+    end # === def meta
 
     def p(*args)
       write_tag("p", *args)
@@ -100,8 +81,8 @@ module Mu_Html
       write_tag("footer", txt)
     end # === def footer
 
-    def input(*args)
-      write_tag_closed("input")
+    def input(attrs)
+      write_tag_closed("input", attrs)
     end # === def input
 
     def div(*args)
@@ -122,27 +103,60 @@ module Mu_Html
       end
     end # === def equal?
 
+    # =========================================================================
+    # === WRITE ===============================================================
+    # =========================================================================
+
     def write_tag(name : String, content : String)
       @io << "<#{name}>"
       write_tag_body(content)
       @io << "</#{name}>"
     end # === def write_tag
 
-    def write_tag(name : String, args = nil)
+    def write_attrs(tag, raw_attrs)
+      attrs = Mu_Clean.attrs(tag, raw_attrs)
+      if !attrs
+        raise Exception.new("Invalid attributes: #{tag.inspect} #{raw_attrs.inspect}")
+      end
+      return unless attrs
+      attrs.each { |k, v|
+        @io << " #{k}=#{v.inspect}"
+      }
+      true
+    end # === def write_attrs
+
+    def write_tag(name : String, attrs : Hash(String, String))
+      @io << "<#{name}"
+      write_attrs(name, attrs)
+      @io << ">"
+    end # === def write_tag
+
+    def write_tag(name : String, attrs : Hash(String, String))
+      @io << "<#{name}"
+      write_attrs(name, attrs)
+      @io << ">"
+      yield
+      @io << "</#{name}>"
+    end # === def write_tag
+
+    def write_tag(name : String)
       @io << "<#{name}>"
       yield
       @io << "</#{name}>"
     end # === def write_tag
 
-    def write_tag_closed(name : String, *args)
-      @io << "<#{name} args >"
+    def write_tag_closed(name : String, attrs : Hash)
+      @io << "<"
+      @io << name
+      write_attrs("input", attrs)
+      @io << ">"
     end # === def write_tag_closed
 
     def write_tag_body(content : String)
-      @io << Escape.escape(content)
+      @io << Mu_Clean.escape(content)
     end # === def write_tag_body
 
-  end # === class Markup
+  end # === class DSL
 
-end # === module Mu_Html
+end # === module Mu_HTML
 

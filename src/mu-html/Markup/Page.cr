@@ -1,5 +1,5 @@
 
-module Mu_Html
+module Mu_HTML
   module Markup
     struct Page
 
@@ -64,4 +64,4 @@ module Mu_Html
 
     end # === struct Page
   end # === module Markup
-end # === module Mu_Html
+end # === module Mu_HTML

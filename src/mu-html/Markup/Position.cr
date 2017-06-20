@@ -1,5 +1,5 @@
 
-module Mu_Html
+module Mu_HTML
   module Markup
     struct Position
       getter parent : Node
@@ -46,4 +46,4 @@ module Mu_Html
 
     end # === struct Head
   end # === module Markup
-end # === module Mu_Html
+end # === module Mu_HTML

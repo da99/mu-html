@@ -1,5 +1,5 @@
 
-module Mu_Html
+module Mu_HTML
   module Markup
     struct Key
 
@@ -146,4 +146,4 @@ module Mu_Html
 
     end # === struct Key
   end # === module Markup
-end # === module Mu_Html
+end # === module Mu_HTML

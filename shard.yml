@@ -1,9 +1,16 @@
 name: mu-html
 version: 0.1.0
 
-authors:
-  - da99 <i-hate-spam-1234567@mailinator.com>
+dependencies:
+  mu-clean:
+    github: da99/mu-clean
+    branch: master
 
-crystal: 0.22.0
+development_dependencies:
+  shell_out:
+    github: da99/shell_out
+    branch: master
+  exit_on_error:
+    github: da99/exit_on_error
+    branch: master
 
-license: MIT
