@@ -7,7 +7,8 @@ Usage
 
   require "mu-clean"
 
-  Mu_Clean.attr("input", "type", "hidden")
+  Mu_Clean.attr("input", {"type"=>"hidden", "value"=>"my val"})
+  Mu_Clean.attr("meta", {"name"=>"keywords", "content"=>" <my content> "})
   Mu_Clean.escape("my <html>")
   Mu_Clean.uri("http://my.uri")
 
