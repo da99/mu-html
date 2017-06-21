@@ -17,7 +17,28 @@ style = {
 }
 
 
-input = Mu_WWW_HTML.render do
+class IT_WORKS_00
+  include Mu_WWW_HTML
+
+  {% for tag in %w(p span footer) %}
+    def {{tag.id}}(txt : String)
+      tag("{{tag.id}}", txt)
+    end
+  {% end %}
+
+  def input(attrs : Hash)
+    tag("input", attrs)
+  end
+
+  def div(attrs : Hash)
+    tag("div", attrs) do
+      yield
+    end
+  end
+
+end # === class IT_WORKS_00
+
+input = IT_WORKS_00.render do
   html do
     head {
       title "Hello, Test 00"
