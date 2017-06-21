@@ -93,6 +93,7 @@ module Mu_WWW_HTML
     def head
       io << "\n  "
       write_tag("head") do
+        meta({"charset"=>"utf-8"})
         yield
       @io << "\n"
       end
