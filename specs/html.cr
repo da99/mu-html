@@ -1,5 +1,6 @@
 
 require "colorize"
+require "../src/tidy"
 
 def strip(str : String)
   io = IO::Memory.new
@@ -24,10 +25,14 @@ def compare(raw_input, raw_output, filename)
     exit 1
   end
 
+  tidy(output)
+
   it filename do
     input.should eq(output)
   end
 end # === def compare
 
 require "./html/*"
+
+
 

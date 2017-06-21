@@ -1,0 +1,20 @@
+#!/usr/bin/env mksh
+#
+# === {{CMD}}
+#
+set -u -e -o pipefail
+
+PATH="$PATH:$THIS_DIR/../my_os/bin"
+
+case "$(my_os name)" in
+  rolling_void)
+    my_os package --install libxml2-devel tidy5
+    ;;
+
+  *)
+    echo "!!! Unknown os." >&2
+    exit 2
+    ;;
+esac
+
+

@@ -1,0 +1,8 @@
+doctype: html5
+output-html: yes
+indent: auto
+wrap: 0
+markup: yes
+quiet: yes
+tidy-mark: no
+write-back: no

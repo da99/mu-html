@@ -4,6 +4,13 @@ mu-www
 Utilities to generate and clean WWW-releated content.
 Written as a Crystal shard.
 
+da99 users
+==========
+
+```bash
+  mu-www install # installs libxml2-dev, tidy5
+```
+
 Usage
 =============
 

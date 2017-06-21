@@ -1,6 +1,7 @@
 
 require "json"
 require "html"
+require "./tidy"
 
 module Mu_WWW_HTML
 
@@ -11,6 +12,14 @@ module Mu_WWW_HTML
     with markup yield
     markup.io.rewind.to_s
   end # === def to_html
+
+  #
+  # Exists with a non-zero status code
+  # if HTML5 input is invalid.
+  #
+  def tidy!(*args)
+    tidy(*args)
+  end # === def tidy
 
   # =========================================================================
   # === .escape =============================================================
