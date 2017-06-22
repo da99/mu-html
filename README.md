@@ -22,13 +22,41 @@ Usage
   Mu_WWW_HTML.escape("my <html>")
   Mu_WWW_URI.clean("http://my.uri")
 
-  Mu_WWW_HTML.render do
+  class My_HTML
+    include Mu_WWW_HTML
+
+    def p(content : String)
+      tag("p", content)
+    end
+
+    def div(attrs)
+      tag("div", attrs) do
+        yield
+      end
+    end
+
+    def tag_attr(tag, name, val, attrs)
+      case
+      when tag == "div" && name == "css"
+        attrs.delete "css"
+        attrs["class"] = val
+        attrs
+      else
+        super
+      end
+    end
+  end
+
+  My_HTML.render do
     html {
       head {
         title "My Title"
       }
       body {
         p "My text."
+        div({"css"=>"my_class"}) do
+          p "my text"
+        end
       }
     }
   end

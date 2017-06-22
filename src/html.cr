@@ -125,54 +125,78 @@ module Mu_WWW_HTML
     # === WRITE ===============================================================
     # =========================================================================
 
-    def tag(name : String, content : String)
+    private def tag(name : String, content : String)
       @io << "<#{name}>"
       tag_body(content)
       @io << "</#{name}>"
     end # === def tag
 
-    def write_attrs(tag, raw_attrs)
-      attrs = Mu_WWW_Attr.clean(tag, raw_attrs)
-      if !attrs
+    private def tag_attrs(tag, raw_attrs : Hash)
+      new_attrs = raw_attrs.keys.reduce(raw_attrs) do |attrs, k|
+        break nil unless Mu_WWW_Attr.valid_key?(k)
+
+        case attrs
+        when Hash
+          temp = tag_attr(tag, k, attrs[k], attrs)
+          break nil unless temp.is_a?(Hash)
+          temp
+        else
+          break nil
+        end
+      end
+
+      if !new_attrs
         raise Exception.new("Invalid attributes: #{tag.inspect} #{raw_attrs.inspect}")
       end
-      return unless attrs
-      attrs.each { |k, v|
-        @io << " #{k}=#{v.inspect}"
-      }
-      true
-    end # === def write_attrs
 
-    def tag(name : String, attrs : Hash(String, String))
+      new_attrs.keys.each do |k|
+        new_attrs[k] = Mu_WWW_HTML.escape(new_attrs[k])
+      end
+
+      new_attrs
+    end # === def tag_attrs
+
+    private def tag_attr(tag, name, val, attrs)
+      Mu_WWW_Attr.tag_attr(tag, name, val, attrs)
+    end # === def tag_attr
+
+    private def tag(name : String, attrs : Hash(String, String))
       @io << "<"
       @io << name
-      write_attrs(name, attrs)
+      clean_then_write_attrs(name, attrs)
       @io << ">"
     end # === def tag
 
-    def tag(name : String, attrs : Hash(String, String))
+    private def tag(name : String, attrs : Hash(String, String))
       @io << "<#{name}"
-      write_attrs(name, attrs)
+      clean_then_write_attrs(name, attrs)
       @io << ">"
       yield
       @io << "</#{name}>"
     end # === def tag
 
-    def tag(name : String)
+    private def tag(name : String)
       @io << "<#{name}>"
       yield
       @io << "</#{name}>"
     end # === def tag
 
-    def tag(name : String, txt : String)
+    private def tag(name : String, txt : String)
       @io << "<#{name}>"
       tag_body(txt)
       @io << "</#{name}>"
     end # === def tag
 
-    def tag_body(content : String)
+    private def tag_body(content : String)
       @io << Mu_WWW_HTML.escape(content)
     end # === def tag_body
+
+    private def clean_then_write_attrs(tag, raw_attrs)
+      tag_attrs(tag, raw_attrs).each { |k, v|
+        @io << " #{k}=#{v.inspect}"
+      }
+      true
+    end # === def clean_then_write_attrs
 
   end # === module DSL
 
